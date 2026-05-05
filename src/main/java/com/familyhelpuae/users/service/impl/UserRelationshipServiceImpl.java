@@ -1,14 +1,14 @@
-package com.familyhelpuae.user.service.impl;
+package com.familyhelpuae.users.service.impl;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.familyhelpuae.exception.ResourceNotFound;
-import com.familyhelpuae.user.model.User;
-import com.familyhelpuae.user.model.UserRelationship;
-import com.familyhelpuae.user.repository.UserRepository;
-import com.familyhelpuae.user.service.UserRelationshipService;
+import com.familyhelpuae.users.model.User;
+import com.familyhelpuae.users.model.UserRelationship;
+import com.familyhelpuae.users.repository.UserRepository;
+import com.familyhelpuae.users.service.UserRelationshipService;
 
 @Service
 public class UserRelationshipServiceImpl implements UserRelationshipService {

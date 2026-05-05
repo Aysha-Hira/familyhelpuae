@@ -1,4 +1,4 @@
-package com.familyhelpuae.user.service.impl;
+package com.familyhelpuae.users.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.familyhelpuae.exception.DuplucateEmailException;
 import com.familyhelpuae.exception.ResourceNotFound;
-import com.familyhelpuae.user.model.User;
-import com.familyhelpuae.user.repository.UserRepository;
-import com.familyhelpuae.user.service.UserService;
+import com.familyhelpuae.users.model.User;
+import com.familyhelpuae.users.repository.UserRepository;
+import com.familyhelpuae.users.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {

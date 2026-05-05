@@ -1,4 +1,4 @@
-package com.familyhelpuae.user.model;
+package com.familyhelpuae.users.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

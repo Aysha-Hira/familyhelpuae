@@ -1,9 +1,9 @@
-package com.familyhelpuae.user.service.impl;
+package com.familyhelpuae.users.model;
 
 import lombok.Data;
 
 @Data
-public class UserFamilyServiceImpl {
+public class UserFamily {
     private String familyId; // the id of the family
     private String role; // "admin" or "member"
 }

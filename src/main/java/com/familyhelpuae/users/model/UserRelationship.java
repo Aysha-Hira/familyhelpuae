@@ -1,4 +1,4 @@
-package com.familyhelpuae.user.model;
+package com.familyhelpuae.users.model;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.familyhelpuae.user.controller;
+package com.familyhelpuae.users.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

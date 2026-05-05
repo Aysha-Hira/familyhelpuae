@@ -1,11 +1,11 @@
-package com.familyhelpuae.user.service;
+package com.familyhelpuae.users.service;
 
 import java.util.List;
 
-import com.familyhelpuae.user.model.UserRelationship;
+import com.familyhelpuae.users.model.UserRelationship;
 
 public interface UserFamilyService {
-    // List<UserRelationship> getAllRelationships(String userId);
+     List<UserRelationship> getAllFamilyMembers(String userId);
 
     // List<UserRelationship> getRelationshipsByType(String userId, String
     // relationshipType); // do we need this??
