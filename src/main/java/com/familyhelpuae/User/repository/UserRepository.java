@@ -6,6 +6,6 @@ import com.familyhelpuae.user.model.User;
 
 public interface UserRepository extends MongoRepository<User, String> {
 
-    boolean isExistingEmail(String email);
+    boolean existsByEmail(String email);
 
 }

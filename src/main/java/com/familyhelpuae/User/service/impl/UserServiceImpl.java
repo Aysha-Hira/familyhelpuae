@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User addUser(User user) {
         // Check if email already exists
-        if (userRepository.isExistingEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new DuplucateEmailException("Email already exists: " + user.getEmail());
         }
 
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         if (user.getLastName() != null)
             existingUser.setLastName(user.getLastName());
 
-        if (userRepository.isExistingEmail(user.getEmail()))
+        if (userRepository.existsByEmail(user.getEmail()))
             throw new DuplucateEmailException("Email already exists: " + user.getEmail());
 
         if (user.getEmail() != null && !existingUser.getEmail().equals(user.getEmail()))
