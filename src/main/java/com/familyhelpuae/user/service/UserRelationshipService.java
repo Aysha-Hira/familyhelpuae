@@ -1,9 +1,9 @@
-package com.familyhelpuae.users.service;
+package com.familyhelpuae.user.service;
 
 import java.util.List;
 
-import com.familyhelpuae.users.model.User;
-import com.familyhelpuae.users.model.UserRelationship;
+import com.familyhelpuae.user.model.User;
+import com.familyhelpuae.user.model.UserRelationship;
 
 public interface UserRelationshipService {
     List<UserRelationship> getAllRelationships(String userId);

@@ -1,4 +1,4 @@
-package com.familyhelpuae.users.controller;
+package com.familyhelpuae.user.controller;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.familyhelpuae.users.model.User;
-import com.familyhelpuae.users.service.UserService;
+import com.familyhelpuae.user.model.User;
+import com.familyhelpuae.user.service.UserService;
 
 @RestController
 @RequestMapping("/users")
