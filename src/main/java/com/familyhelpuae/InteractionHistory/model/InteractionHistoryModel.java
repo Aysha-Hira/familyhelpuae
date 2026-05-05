@@ -1,7 +1,7 @@
-package com.familyhelpuae.InteractionHistory.model;
+package com.familyhelpuae.interactionhistory.model;
 
 public class InteractionHistoryModel {
-    String interactionId; // requestId + OfferID maybe?
+    String interactionId; // requestId + OfferID
     String helpingFamilyId; // the family that helped in the interaction
     String helpedFamilyId; // the family that recieved help in the interaction
     String interactionType; // e.g., "help_request", "help_provided", "feedback_given"

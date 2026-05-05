@@ -1,4 +1,4 @@
-package com.familyhelpuae.User.controller;
+package com.familyhelpuae.user.controller;
 
 public class UserController {
     

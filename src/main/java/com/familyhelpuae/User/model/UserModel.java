@@ -1,4 +1,4 @@
-package com.familyhelpuae.User.model;
+package com.familyhelpuae.user.model;
 
 import java.util.List;
 

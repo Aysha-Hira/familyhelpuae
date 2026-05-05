@@ -1,4 +1,4 @@
-package com.familyhelpuae.User.service;
+package com.familyhelpuae.user.service;
 
 public class UserServices {
     
