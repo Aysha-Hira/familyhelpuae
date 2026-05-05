@@ -1,5 +1,5 @@
 package com.familyhelpuae.auth.model;
 
-public class AuthModel {
+public class Auth {
     
 }

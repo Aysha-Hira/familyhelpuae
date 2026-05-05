@@ -1,6 +1,6 @@
 package com.familyhelpuae.interactionhistory.model;
 
-public class InteractionHistoryModel {
+public class InteractionHistory {
     String interactionId; // requestId + OfferID
     String helpingFamilyId; // the family that helped in the interaction
     String helpedFamilyId; // the family that recieved help in the interaction
