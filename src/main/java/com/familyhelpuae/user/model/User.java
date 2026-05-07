@@ -162,4 +162,19 @@ public class User {
         }
         return null;
     }
+
+    public boolean hasFamily(String familyId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'hasFamily'");
+    }
+
+    public void deleteFamily(String familyId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteFamily'");
+    }
+
+    public void updateFamily(String familyId, String role) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateFamily'");
+    }
 }

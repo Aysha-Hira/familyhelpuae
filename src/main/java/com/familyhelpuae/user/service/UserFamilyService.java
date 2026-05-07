@@ -2,33 +2,18 @@ package com.familyhelpuae.user.service;
 
 import java.util.List;
 
-import com.familyhelpuae.user.model.UserRelationship;
+import com.familyhelpuae.user.model.User;
+import com.familyhelpuae.user.model.UserFamily;
 
 public interface UserFamilyService {
-     List<UserRelationship> getAllFamilyMembers(String userId);
+    List<UserFamily> getAllFamilies(String userId);
 
-    // List<UserRelationship> getRelationshipsByType(String userId, String
-    // relationshipType); // do we need this??
+    User addFamily(String userId, String familyId, String role);
 
-    // boolean hasRelationshipWithRegisteredUser(String userId, String
-    // anotherUserID);
+    User updateFamily(String userId, String familyId, String role);
 
-    // boolean hasRelationshipWithNonRegisteredUser(String userId, String name,
-    // String email);
+    void removeFamily(String userId, String familyId);
 
-    // User addRelationship(String userId, String anotherUserID, String
-    // relationshipType);
+    boolean isRelatedToFamily(String userId, String familyId);
 
-    // User addRelationship(String userId, String name, String email, String
-    // relationshipType);
-
-    // User updateRelationship(String userId, String anotherUserID, String
-    // relationshipType);
-
-    // User updateRelationship(String userId, String name, String email, String
-    // relationshipType);
-
-    // void removeRelationship(String userId, String anotherUserID);
-
-    // void removeRelationship(String userId, String name, String email);
 }
