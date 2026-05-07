@@ -2,6 +2,7 @@ package com.familyhelpuae.user.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,30 +26,31 @@ public class UserFamilyController {
    }
 
    @GetMapping()
-   public List<UserFamily> getAllFamilies(@PathVariable String userId) {
-      return userFamilyService.getAllFamilies(userId);
+   public ResponseEntity<List<UserFamily>> getAllFamilies(@PathVariable String userId) {
+      return ResponseEntity.ok(userFamilyService.getAllFamilies(userId));
    }
 
    @GetMapping("/registered/{familyId}")
-   public boolean isRelatedToFamily(@PathVariable String userId, @PathVariable String familyId) {
-      return userFamilyService.isRelatedToFamily(userId, familyId);
+   public ResponseEntity<Boolean> isRelatedToFamily(@PathVariable String userId, @PathVariable String familyId) {
+      return ResponseEntity.ok(userFamilyService.isRelatedToFamily(userId, familyId));
    }
 
    @PostMapping("/add")
-   public User addRelationship(@PathVariable String userId, @RequestParam String familyId,
+   public ResponseEntity<User> addRelationship(@PathVariable String userId, @RequestParam String familyId,
          @RequestParam String role) {
-      return userFamilyService.addFamily(userId, familyId, role);
+      return ResponseEntity.ok(userFamilyService.addFamily(userId, familyId, role));
    }
 
    @PutMapping("/update")
-   public User updateRelationship(@PathVariable String userId, @RequestParam String familyId,
+   public ResponseEntity<User> updateRelationship(@PathVariable String userId, @RequestParam String familyId,
          @RequestParam String role) {
-      return userFamilyService.updateFamily(userId, familyId, role);
+      return ResponseEntity.ok(userFamilyService.updateFamily(userId, familyId, role));
    }
 
    @DeleteMapping("/remove")
-   public void removeRelationship(@PathVariable String userId, @RequestParam String familyId) {
+   public ResponseEntity<Void> removeRelationship(@PathVariable String userId, @RequestParam String familyId) {
       userFamilyService.removeFamily(userId, familyId);
+      return ResponseEntity.noContent().build();
    }
 
 }
