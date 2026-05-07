@@ -164,17 +164,32 @@ public class User {
     }
 
     public boolean hasFamily(String familyId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasFamily'");
-    }
+        for (UserFamily family : families) {
+            if (family.getFamilyId().equals(familyId))
+                return true;
+        }
 
-    public void deleteFamily(String familyId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteFamily'");
+        return false;
     }
 
     public void updateFamily(String familyId, String role) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateFamily'");
+        for (UserFamily family : families)
+            if (family.getFamilyId().equals(familyId)) {
+                family.setRole(role);
+                return;
+            }
     }
+
+    public void deleteFamily(String familyId) {
+        Iterator<UserFamily> iterator = families.iterator();
+
+        while (iterator.hasNext()) {
+            UserFamily family = iterator.next();
+            if (family.getFamilyId().equals(familyId)) {
+                iterator.remove();
+                return;
+            }
+        }
+    }
+
 }
