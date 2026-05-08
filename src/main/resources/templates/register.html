@@ -1,0 +1,158 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register – Family Help UAE</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/register.css" />
+  </head>
+  <body>
+    <div class="logo">Family Help UAE</div>
+
+    <div class="card">
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step active">
+          <div class="step-circle">1</div>
+          <span class="step-label">Personal</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step inactive">
+          <div class="step-circle">2</div>
+          <span class="step-label">Members</span>
+        </div>
+        <!-- <div class="step-line"></div>
+        <div class="step inactive">
+          <div class="step-circle">3</div>
+          <span class="step-label">Family</span>
+        </div> -->
+      </div>
+
+      <!-- Form -->
+      <div class="form-body">
+        <h2>Personal Details</h2>
+        <p class="subtitle">Let's start with your basic information.</p>
+
+        <!-- Global error -->
+        <div
+          class="global-error"
+          th:if="${globalError}"
+          th:text="${globalError}"
+        ></div>
+
+        <form
+          th:action="@{/register}"
+          th:object="${register}"
+          method="post"
+        >
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                th:field="*{firstName}"
+                placeholder="Ahmad"
+              />
+              <span
+                class="field-error"
+                th:if="${#fields.hasErrors('firstName')}"
+                th:errors="*{firstName}"
+              ></span>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                th:field="*{lastName}"
+                placeholder="Al Mansoori"
+              />
+              <span
+                class="field-error"
+                th:if="${#fields.hasErrors('lastName')}"
+                th:errors="*{lastName}"
+              ></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              th:field="*{email}"
+              placeholder="ahmad@example.com"
+            />
+            <span
+              class="field-error"
+              th:if="${#fields.hasErrors('email')}"
+              th:errors="*{email}"
+            ></span>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              th:field="*{password}"
+              placeholder="Min. 8 characters"
+            />
+            <span class="hint"
+              >Use at least 8 characters with a mix of letters and
+              numbers.</span
+            >
+            <span
+              class="field-error"
+              th:if="${#fields.hasErrors('password')}"
+              th:errors="*{password}"
+            ></span>
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            <div class="phone-wrapper">
+              <span class="phone-prefix">🇦🇪 +971</span>
+              <input
+                type="tel"
+                id="phone"
+                th:field="*{phone}"
+                placeholder="5X XXX XXXX"
+              />
+            </div>
+            <span
+              class="field-error"
+              th:if="${#fields.hasErrors('phone')}"
+              th:errors="*{phone}"
+            ></span>
+          </div>
+
+          <div class="form-footer">
+            <button type="submit" class="btn-continue">
+              Continue
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <p class="signin-link">
+      Already have an account? <a th:href="@{/login}">Sign in</a>
+    </p>
+  </body>
+</html>

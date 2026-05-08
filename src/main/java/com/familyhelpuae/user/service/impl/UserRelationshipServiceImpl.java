@@ -43,6 +43,21 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 		return user.hasRelationship(name, email);
 	}
 
+	public User addRelationships(User user) {
+		for (UserRelationship relationship : user.getRelationships()) {
+			if (relationship.getUserId() != null) {
+				// related to registered user
+				user = addRelationship(user.getUserID(), relationship.getUserId(), relationship.getRelationshipType());
+			} else {
+				// related to non-registered user
+				user = addRelationship(user.getUserID(), relationship.getName(), relationship.getEmail(),
+						relationship.getRelationshipType());
+			}
+		
+		}
+		return user;
+	}
+
 	@Override
 	public User addRelationship(String userId, String anotherUserID, String relationshipType) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));

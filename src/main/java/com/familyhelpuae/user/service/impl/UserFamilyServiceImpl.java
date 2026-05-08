@@ -1,93 +1,93 @@
-package com.familyhelpuae.user.service.impl;
+// package com.familyhelpuae.user.service.impl;
 
-import java.util.List;
+// import java.util.List;
 
-import com.familyhelpuae.exception.ResourceNotFound;
-import com.familyhelpuae.user.model.User;
-import com.familyhelpuae.user.model.UserFamily;
-import com.familyhelpuae.user.repository.UserRepository;
-import com.familyhelpuae.user.service.UserFamilyService;
+// import com.familyhelpuae.exception.ResourceNotFound;
+// import com.familyhelpuae.user.model.User;
+// import com.familyhelpuae.user.model.UserFamily;
+// import com.familyhelpuae.user.repository.UserRepository;
+// import com.familyhelpuae.user.service.UserFamilyService;
 
-public class UserFamilyServiceImpl implements UserFamilyService {
+// public class UserFamilyServiceImpl implements UserFamilyService {
 
-    private final UserRepository userRepository;
-    // private final FamilyRepository familyRepository;
+//     private final UserRepository userRepository;
+//     // private final FamilyRepository familyRepository;
 
-    public UserFamilyServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+//     public UserFamilyServiceImpl(UserRepository userRepository) {
+//         this.userRepository = userRepository;
+//     }
 
-    // public UserFamilyServiceImpl(UserRepository userRepository, FamilyRepository
-    // familyRepository) {
-    // this.userRepository = userRepository;
-    // this.familyRepository = familyRepository;
-    // }
+//     // public UserFamilyServiceImpl(UserRepository userRepository, FamilyRepository
+//     // familyRepository) {
+//     // this.userRepository = userRepository;
+//     // this.familyRepository = familyRepository;
+//     // }
 
-    @Override
-    public List<UserFamily> getAllFamilies(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
+//     @Override
+//     public List<UserFamily> getAllFamilies(String userId) {
+//         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
-        return user.getFamilies();
-    }
+//         return user.getFamilies();
+//     }
 
-    @Override
-    public User addFamily(String userId, String familyId, String role) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
+//     @Override
+//     public User addFamily(String userId, String familyId, String role) {
+//         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
-        // familyRepository.findById(familyId).orElseThrow(() -> new
-        // ResourceNotFound("Family", "id", familyId));
+//         // familyRepository.findById(familyId).orElseThrow(() -> new
+//         // ResourceNotFound("Family", "id", familyId));
 
-        if (user.hasFamily(familyId))
-            throw new IllegalArgumentException("User " + userId + " is already a member of family " + familyId);
+//         if (user.hasFamily(familyId))
+//             throw new IllegalArgumentException("User " + userId + " is already a member of family " + familyId);
 
-        // add family to user
-        user.getFamilies().add(new UserFamily(familyId, role));
+//         // add family to user
+//         user.getFamilies().add(new UserFamily(familyId, role));
 
-        // save updated user
-        return userRepository.save(user);
-    }
+//         // save updated user
+//         return userRepository.save(user);
+//     }
 
-    @Override
-    public User updateFamily(String userId, String familyId, String role) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
+//     @Override
+//     public User updateFamily(String userId, String familyId, String role) {
+//         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
-        // familyRepository.findById(familyId).orElseThrow(() -> new
-        // ResourceNotFound("Family", "id", familyId));
+//         // familyRepository.findById(familyId).orElseThrow(() -> new
+//         // ResourceNotFound("Family", "id", familyId));
 
-        if (!user.hasFamily(familyId))
-            throw new IllegalArgumentException(
-                    "User " + userId + " is not a member of family " + familyId);
+//         if (!user.hasFamily(familyId))
+//             throw new IllegalArgumentException(
+//                     "User " + userId + " is not a member of family " + familyId);
 
-        // update relationship
-        user.updateFamily(familyId, role);
-        // save updated user
-        return userRepository.save(user);
+//         // update relationship
+//         user.updateFamily(familyId, role);
+//         // save updated user
+//         return userRepository.save(user);
 
-    }
+//     }
 
-    @Override
-    public void removeFamily(String userId, String familyId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
+//     @Override
+//     public void removeFamily(String userId, String familyId) {
+//         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
-        if (!user.hasFamily(familyId)) {
-            throw new IllegalArgumentException(
-                    "User " + userId + " is not a member of family " + familyId);
-        }
+//         if (!user.hasFamily(familyId)) {
+//             throw new IllegalArgumentException(
+//                     "User " + userId + " is not a member of family " + familyId);
+//         }
 
-        user.deleteFamily(familyId);
+//         user.deleteFamily(familyId);
 
-        userRepository.save(user);
-    }
+//         userRepository.save(user);
+//     }
 
-    @Override
-    public boolean isRelatedToFamily(String userId, String familyId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFound("User", "id", userId));
+//     @Override
+//     public boolean isRelatedToFamily(String userId, String familyId) {
+//         User user = userRepository.findById(userId)
+//                 .orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
-        // Family family = userRepository.findFamilyById(familyId)
-        // .orElseThrow(() -> new ResourceNotFound("Family", "id", familyId));
+//         // Family family = userRepository.findFamilyById(familyId)
+//         // .orElseThrow(() -> new ResourceNotFound("Family", "id", familyId));
 
-        return user.hasFamily(familyId);
+//         return user.hasFamily(familyId);
 
-    }
-}
+//     }
+// }

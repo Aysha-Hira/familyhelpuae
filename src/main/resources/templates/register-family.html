@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family – Family Help UAE</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/register.css">
+</head>
+<body>
+
+<div class="logo">Family Help UAE</div>
+
+<div class="card">
+    <!-- Stepper -->
+    <div class="stepper">
+        <div class="step done">
+            <div class="step-circle">✓</div>
+            <span class="step-label">Personal</span>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step done">
+            <div class="step-circle">✓</div>
+            <span class="step-label">Members</span>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step active">
+            <div class="step-circle">3</div>
+            <span class="step-label">Family</span>
+        </div>
+    </div>
+
+    <div class="form-body">
+        <h2>Family Setup</h2>
+        <p class="subtitle">Create a new family group or join an existing one.</p>
+
+        <div class="global-error" th:if="${globalError}" th:text="${globalError}"></div>
+
+        <!-- Toggle: create vs join -->
+        <div class="toggle-group">
+            <input type="radio" id="actionCreate" name="familyAction" value="create"
+                   checked onchange="toggleFamilyPanel(this.value)" />
+            <label for="actionCreate">Create a Family</label>
+
+            <input type="radio" id="actionJoin" name="familyAction" value="join"
+                   onchange="toggleFamilyPanel(this.value)" />
+            <label for="actionJoin">Join a Family</label>
+        </div>
+
+        <form th:action="@{/register/family}" th:object="${register}" method="post">
+
+            <!-- Panel: Create -->
+            <div id="panel-create" class="panel visible">
+                <div class="info-box">
+                    A new family group will be created and you'll be set as the admin.
+                </div>
+                <div class="form-group">
+                    <label for="familyName">Family Name</label>
+                    <input type="text" id="familyName" th:field="*{familyName}"
+                           placeholder="e.g. Al Mansoori Family" />
+                    <span class="field-error" th:if="${#fields.hasErrors('familyName')}"
+                          th:errors="*{familyName}"></span>
+                </div>
+            </div>
+
+            <!-- Panel: Join -->
+            <div id="panel-join" class="panel">
+                <div class="info-box">
+                    Ask your family admin for the Family ID to join their group.
+                </div>
+                <div class="form-group">
+                    <label for="familyId">Family ID</label>
+                    <input type="text" id="familyId" th:field="*{familyId}"
+                           placeholder="Enter the Family ID" />
+                    <span class="field-error" th:if="${#fields.hasErrors('familyId')}"
+                          th:errors="*{familyId}"></span>
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <a th:href="@{/register/members}" class="btn-back">← Back</a>
+                <button type="submit" class="btn-continue">
+                    Finish
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+
+        </form>
+
+        <p class="signin-link" style="margin-top:16px">
+            <a th:href="@{/register/family/skip}">Skip this step →</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    function toggleFamilyPanel(value) {
+        document.getElementById('panel-create').classList.toggle('visible', value === 'create');
+        document.getElementById('panel-join').classList.toggle('visible', value === 'join');
+    }
+</script>
+
+</body>
+</html>
