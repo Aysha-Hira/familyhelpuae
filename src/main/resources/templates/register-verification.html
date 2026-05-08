@@ -1,129 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Members – Family Help UAE</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/register.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Account – Family Help UAE</title>
 
-<div class="logo">Family Help UAE</div>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/register.css" />
+  </head>
 
-<div class="card">
-    <!-- Stepper -->
-    <div class="stepper">
-        <div class="step done">
-            <div class="step-circle">✓</div>
-            <span class="step-label">Personal</span>
-        </div>
-        <div class="step-line done"></div>
-        <div class="step active">
-            <div class="step-circle">2</div>
-            <span class="step-label">Members</span>
-        </div>
-    </div>
+  <body>
+    <div class="logo">Family Help UAE</div>
 
-    <div class="form-body">
-        <h2>Add a Family Member</h2>
-        <p class="subtitle">Connect with someone you know. You can add more later.</p>
+    <div class="card">
+      <div class="form-body">
+        <h2>Verify Your Account</h2>
+        <p class="subtitle">
+          Enter the verification code sent to your email/phone
+        </p>
 
-        <div class="global-error" th:if="${globalError}" th:text="${globalError}"></div>
+        <!-- Error message -->
+        <div class="global-error" th:if="${error}" th:text="${error}"></div>
 
-        <!-- Toggle: registered vs non-registered -->
-        <div class="toggle-group">
-            <input type="radio" id="typeRegistered" name="memberType" value="registered"
-                   checked onchange="togglePanel(this.value)" />
-            <label for="typeRegistered">Registered User</label>
+        <!-- Verification Form -->
+        <form th:action="@{/register/verification}" method="post">
+          <div class="form-group">
+            <label for="code">Verification Code</label>
 
-            <input type="radio" id="typeNonRegistered" name="memberType" value="nonregistered"
-                   onchange="togglePanel(this.value)" />
-            <label for="typeNonRegistered">Not on Platform</label>
-        </div>
+            <input
+              type="text"
+              id="code"
+              name="code"
+              maxlength="6"
+              placeholder="Enter 6-digit code"
+              required
+            />
+          </div>
 
-        <form th:action="@{/register/members}" th:object="${register}" method="post">
+          <div class="form-footer">
+            <a th:href="@{/register}" class="btn-back">← Back</a>
 
-            <!-- Panel: Registered -->
-            <div id="panel-registered" class="panel visible">
-                <div class="form-group">
-                    <label for="relatedUserId">User ID</label>
-                    <input type="text" id="relatedUserId" th:field="*{relatedUserId}"
-                           placeholder="Enter their User ID" />
-                    <span class="field-error" th:if="${#fields.hasErrors('relatedUserId')}"
-                          th:errors="*{relatedUserId}"></span>
-                </div>
-            </div>
-
-            <!-- Panel: Non-registered -->
-            <div id="panel-nonregistered" class="panel">
-                <div class="form-group">
-                    <label for="relatedName">Full Name</label>
-                    <input type="text" id="relatedName" th:field="*{relatedName}"
-                           placeholder="e.g. Sara Al Mansoori" />
-                    <span class="field-error" th:if="${#fields.hasErrors('relatedName')}"
-                          th:errors="*{relatedName}"></span>
-                </div>
-                <div class="form-group">
-                    <label for="relatedEmail">Email Address</label>
-                    <input type="email" id="relatedEmail" th:field="*{relatedEmail}"
-                           placeholder="sara@example.com" />
-                    <span class="field-error" th:if="${#fields.hasErrors('relatedEmail')}"
-                          th:errors="*{relatedEmail}"></span>
-                </div>
-            </div>
-
-            <!-- Relationship type -->
-            <div class="form-group">
-                <label for="relationshipType">Relationship</label>
-                <div class="select-wrapper">
-                    <select id="relationshipType" th:field="*{relationshipType}">
-                        <option value="">Select relationship...</option>
-                        <option value="father">Father</option>
-                        <option value="mother">Mother</option>
-                        <option value="brother">Brother</option>
-                        <option value="sister">Sister</option>
-                        <option value="son">Son</option>
-                        <option value="daughter">Daughter</option>
-                        <option value="husband">Husband</option>
-                        <option value="wife">Wife</option>
-                        <option value="grandfather">Grandfather</option>
-                        <option value="grandmother">Grandmother</option>
-                        <option value="uncle">Uncle</option>
-                        <option value="aunt">Aunt</option>
-                        <option value="cousin">Cousin</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <span class="field-error" th:if="${#fields.hasErrors('relationshipType')}"
-                      th:errors="*{relationshipType}"></span>
-            </div>
-
-            <div class="form-footer">
-                <a th:href="@{/register}" class="btn-back">← Back</a>
-                <button type="submit" class="btn-continue">
-                    Continue
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                         stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </button>
-            </div>
-
+            <button type="submit" class="btn-continue">Verify</button>
+          </div>
         </form>
 
-        <p class="signin-link" style="margin-top:16px">
-            <a th:href="@{/register/members/skip}">Skip this step →</a>
+        <p class="signin-link" style="margin-top: 16px">
+          Didn’t receive code?
+          <a th:href="@{/register/resend}">Resend</a>
         </p>
+      </div>
     </div>
-</div>
-
-<script>
-    function togglePanel(value) {
-        document.getElementById('panel-registered').classList.toggle('visible', value === 'registered');
-        document.getElementById('panel-nonregistered').classList.toggle('visible', value === 'nonregistered');
-    }
-</script>
-
-</body>
+  </body>
 </html>

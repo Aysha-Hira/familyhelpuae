@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.familyhelpuae.exception.DuplucateEmailException;
 import com.familyhelpuae.exception.ResourceNotFound;
@@ -13,6 +14,7 @@ import com.familyhelpuae.user.repository.UserRepository;
 import com.familyhelpuae.user.service.UserService;
 
 @Service
+@Validated
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 

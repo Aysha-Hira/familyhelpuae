@@ -3,14 +3,17 @@ package com.familyhelpuae.user.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.familyhelpuae.exception.ResourceNotFound;
 import com.familyhelpuae.user.model.User;
 import com.familyhelpuae.user.model.UserRelationship;
 import com.familyhelpuae.user.repository.UserRepository;
 import com.familyhelpuae.user.service.UserRelationshipService;
+import com.mongodb.lang.NonNull;
 
 @Service
+@Validated
 public class UserRelationshipServiceImpl implements UserRelationshipService {
 
 	private final UserRepository userRepository;
@@ -20,25 +23,26 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 	}
 
 	@Override
-	public List<UserRelationship> getAllRelationships(String userId) {
+	public List<UserRelationship> getAllRelationships(@NonNull String userId) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		return user.getRelationships();
 	}
 
 	@Override
-	public List<UserRelationship> getRelationshipsByType(String userId, String relationshipType) {
+	public List<UserRelationship> getRelationshipsByType(@NonNull String userId, @NonNull String relationshipType) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		return user.getRelationshipsByType(relationshipType);
 	}
 
-	public boolean hasRelationshipWithRegisteredUser(String userId, String anotherUserId) {
+	public boolean hasRelationshipWithRegisteredUser(@NonNull String userId, @NonNull String anotherUserId) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 		return user.hasRelationship(anotherUserId);
 	}
 
-	public boolean hasRelationshipWithNonRegisteredUser(String userId, String name, String email) {
+	public boolean hasRelationshipWithNonRegisteredUser(@NonNull String userId, @NonNull String name,
+			@NonNull String email) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 		return user.hasRelationship(name, email);
 	}
@@ -53,13 +57,14 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 				user = addRelationship(user.getUserID(), relationship.getName(), relationship.getEmail(),
 						relationship.getRelationshipType());
 			}
-		
+
 		}
 		return user;
 	}
 
 	@Override
-	public User addRelationship(String userId, String anotherUserID, String relationshipType) {
+	public User addRelationship(@NonNull String userId, @NonNull String anotherUserID,
+			@NonNull String relationshipType) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		userRepository.findById(anotherUserID).orElseThrow(() -> new ResourceNotFound("User", "id", anotherUserID));
@@ -75,7 +80,8 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 		return userRepository.save(user);
 	}
 
-	public User addRelationship(String userId, String name, String email, String relationshipType) {
+	public User addRelationship(@NonNull String userId, @NonNull String name, @NonNull String email,
+			@NonNull String relationshipType) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		if (user.hasRelationship(name, email))
@@ -90,7 +96,8 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 	}
 
 	@Override
-	public User updateRelationship(String userId, String anotherUserID, String relationshipType) {
+	public User updateRelationship(@NonNull String userId, @NonNull String anotherUserID,
+			@NonNull String relationshipType) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		userRepository.findById(anotherUserID).orElseThrow(() -> new ResourceNotFound("User", "id", anotherUserID));
@@ -106,7 +113,8 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 
 	}
 
-	public User updateRelationship(String userId, String name, String email, String relationshipType) {
+	public User updateRelationship(@NonNull String userId, @NonNull String name, @NonNull String email,
+			@NonNull String relationshipType) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		if (!user.hasRelationship(name, email))
@@ -121,7 +129,7 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 	}
 
 	@Override
-	public void removeRelationship(String userId, String anotherUserID) {
+	public void removeRelationship(@NonNull String userId, @NonNull String anotherUserID) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		if (!user.hasRelationship(anotherUserID)) {
@@ -134,7 +142,7 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 		userRepository.save(user);
 	}
 
-	public void removeRelationship(String userId, String name, String email) {
+	public void removeRelationship(@NonNull String userId, @NonNull String name, @NonNull String email) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		if (!user.hasRelationship(name, email)) {

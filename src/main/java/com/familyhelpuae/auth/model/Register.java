@@ -1,6 +1,12 @@
 package com.familyhelpuae.auth.model;
 
-import jakarta.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -29,8 +35,5 @@ public class Register {
     private String familyId; // only filled if joining existing
 
     // Add to Register.java
-    private String relatedUserId; // if the person is already on the platform
-    private String relatedName; // if not registered
-    private String relatedEmail; // if not registered
-    private String relationshipType; // "father", "mother", "brother", "sister" etc.
+    private List<Relationship> relationships = new ArrayList<>();
 }
