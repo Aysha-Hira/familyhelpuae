@@ -49,26 +49,13 @@ public class RegisterController {
 
         Register pending = (Register) session.getAttribute("pendingUser");
 
-        boolean joiningExisting = false;
-
         for (Family family : dto.getFamilies()) {
-            if (family.isCreateFamily()) {
-                // User is creating a new family — store it and move on
-                pending.setCreateFamily(true);
-                pending.getFamilies().add(family);
+            pending = authService.addFamilies(pending, dto);
+            session.setAttribute("pendingUser", pending);
+            if (!pending.isCreateFamily()) // joining a new family
+                // Send them to a holding page — they need admin approval
+                return "redirect:/register/pending-approval";
 
-            } else if (family.getFamilyCode() != null && !family.getFamilyCode().isEmpty()) {
-                // User wants to join an existing family by code
-                pending.getFamilies().add(family);
-                joiningExisting = true;
-            }
-        }
-
-        session.setAttribute("pendingUser", pending);
-
-        if (joiningExisting) {
-            // Send them to a holding page — they need admin approval
-            return "redirect:/register/pending-approval";
         }
 
         // Either creating a family or skipping — continue to members step

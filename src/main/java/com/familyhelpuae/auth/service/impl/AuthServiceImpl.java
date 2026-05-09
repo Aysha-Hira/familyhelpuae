@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import com.familyhelpuae.DTO.Family;
 import com.familyhelpuae.DTO.Register;
 import com.familyhelpuae.DTO.Relationship;
 import com.familyhelpuae.auth.service.AuthService;
@@ -133,10 +134,32 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean isEmailExisting(String email) {
-       if (UserRepository.existsByEmail(email))
+        if (UserRepository.existsByEmail(email))
             return true;
 
-       return false;
+        return false;
+    }
+
+    @Override
+    public Register addFamilies(Register pendingUser, Register newDatawithFamilies) {
+        boolean isjoiningafamily = false;
+        for (Family family : newDatawithFamilies.getFamilies()) {
+            if (family.isCreateFamily()) {
+                // User is creating a new family — store it and move on
+                pendingUser.setCreateFamily(true);
+                pendingUser.getFamilies().add(family);
+
+            } else if (family.getFamilyCode() != null && !family.getFamilyCode().isEmpty()) {
+                // User wants to join an existing family by code
+                pendingUser.getFamilies().add(family);
+                isjoiningafamily = true;
+            }
+        }
+
+        if (isjoiningafamily)
+            pendingUser.setCreateFamily(false);
+
+        return pendingUser;
     }
 
 }

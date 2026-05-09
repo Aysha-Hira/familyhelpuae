@@ -16,4 +16,6 @@ public interface AuthService {
 
     public boolean isEmailExisting(String email);
 
+    public Register addFamilies(Register dto, Register dto2);
+
 }
