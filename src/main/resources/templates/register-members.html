@@ -20,144 +20,114 @@
           <div class="step-circle">✓</div>
           <span class="step-label">Personal</span>
         </div>
+        <!-- <div class="step-line"></div>
+        <div class="step inactive">
+          <div class="step-circle">✓</div>
+          <span class="step-label">Family</span>
+        </div> -->
         <div class="step-line done"></div>
         <div class="step active">
-          <div class="step-circle">2</div>
+          <div class="step-circle">3</div>
           <span class="step-label">Members</span>
         </div>
-      </div>
-
-      <div class="form-body">
-        <h2>Add a Family Member</h2>
-        <p class="subtitle">
-          Connect with someone you know. You can add more later.
-        </p>
-
-        <div
-          class="global-error"
-          th:if="${globalError}"
-          th:text="${globalError}"
-        ></div>
-
-        <!-- Toggle: registered vs non-registered -->
-        <div class="toggle-group">
-          <input
-            type="radio"
-            id="typeRegistered"
-            name="memberType"
-            value="registered"
-            checked
-            onchange="togglePanel(this.value)"
-          />
-          <label for="typeRegistered">Registered User</label>
-
-          <input
-            type="radio"
-            id="typeNonRegistered"
-            name="memberType"
-            value="nonregistered"
-            onchange="togglePanel(this.value)"
-          />
-          <label for="typeNonRegistered">Not on Platform</label>
+        <div class="step-line"></div>
+        <div class="step inactive">
+          <div class="step-circle">4</div>
+          <span class="step-label">Verification</span>
         </div>
-
+      </div>
+      <div class="form-body">
         <form
           th:action="@{/register/members}"
           th:object="${register}"
           method="post"
         >
-          <!-- Panel: Registered -->
-          <div id="panel-registered" class="panel visible">
-            <div class="form-group">
-              <label for="relatedUserId">User ID</label>
-              <input
-                type="text"
-                id="relatedUserId"
-                th:field="*{relatedUserId}"
-                placeholder="Enter their User ID"
-              />
-              <span
-                class="field-error"
-                th:if="${#fields.hasErrors('relatedUserId')}"
-                th:errors="*{relatedUserId}"
-              ></span>
+          <div id="members-container">
+            <div class="member-card" th:each="rel, stat : *{relationships}">
+              <!-- Member Type -->
+              <div class="toggle-group">
+                <input
+                  type="radio"
+                  th:name="'relationships[' + ${stat.index} + '].memberType'"
+                  value="registered"
+                  checked
+                />
+                <label>Registered User</label>
+
+                <input
+                  type="radio"
+                  th:name="'relationships[' + ${stat.index} + '].memberType'"
+                  value="nonregistered"
+                />
+                <label>Not on Platform</label>
+              </div>
+
+              <!-- Registered -->
+              <div class="form-group">
+                <label>User ID</label>
+
+                <input
+                  type="text"
+                  th:field="*{relationships[__${stat.index}__].relatedUserId}"
+                  placeholder="Enter User ID"
+                />
+              </div>
+
+              <!-- Non-registered -->
+              <div class="form-group">
+                <label>Full Name</label>
+
+                <input
+                  type="text"
+                  th:field="*{relationships[__${stat.index}__].relatedName}"
+                  placeholder="Full Name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Email</label>
+
+                <input
+                  type="email"
+                  th:field="*{relationships[__${stat.index}__].relatedEmail}"
+                  placeholder="Email"
+                />
+              </div>
+
+              <!-- Relationship -->
+              <div class="form-group">
+                <label>Relationship</label>
+
+                <select
+                  th:field="*{relationships[__${stat.index}__].relationshipType}"
+                >
+                  <option value="">Select relationship...</option>
+                  <option value="father">Father</option>
+                  <option value="mother">Mother</option>
+                  <option value="brother">Brother</option>
+                  <option value="sister">Sister</option>
+                  <option value="son">Son</option>
+                  <option value="daughter">Daughter</option>
+                  <option value="wife">Wife</option>
+                  <option value="husband">Husband</option>
+                </select>
+              </div>
+
+              <hr />
             </div>
           </div>
 
-          <!-- Panel: Non-registered -->
-          <div id="panel-nonregistered" class="panel">
-            <div class="form-group">
-              <label for="relatedName">Full Name</label>
-              <input
-                type="text"
-                id="relatedName"
-                th:field="*{relatedName}"
-                placeholder="e.g. Sara Al Mansoori"
-              />
-              <span
-                class="field-error"
-                th:if="${#fields.hasErrors('relatedName')}"
-                th:errors="*{relatedName}"
-              ></span>
-            </div>
-            <div class="form-group">
-              <label for="relatedEmail">Email Address</label>
-              <input
-                type="email"
-                id="relatedEmail"
-                th:field="*{relatedEmail}"
-                placeholder="sara@example.com"
-              />
-              <span
-                class="field-error"
-                th:if="${#fields.hasErrors('relatedEmail')}"
-                th:errors="*{relatedEmail}"
-              ></span>
-            </div>
-          </div>
-
-          <!-- Relationship type -->
-          <div class="form-group">
-            <label for="relationshipType">Relationship</label>
-            <div class="select-wrapper">
-              <select id="relationshipType" th:field="*{relationshipType}">
-                <option value="">Select relationship...</option>
-                <option value="father">Father</option>
-                <option value="mother">Mother</option>
-                <option value="brother">Brother</option>
-                <option value="sister">Sister</option>
-                <option value="son">Son</option>
-                <option value="daughter">Daughter</option>
-                <option value="husband">Husband</option>
-                <option value="wife">Wife</option>
-                <option value="grandfather">Grandfather</option>
-                <option value="grandmother">Grandmother</option>
-                <option value="uncle">Uncle</option>
-                <option value="aunt">Aunt</option>
-                <option value="cousin">Cousin</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <span
-              class="field-error"
-              th:if="${#fields.hasErrors('relationshipType')}"
-              th:errors="*{relationshipType}"
-            ></span>
-          </div>
+          <!-- Add Another -->
+          <button type="button" onclick="addMember()">
+            + Add Another Member
+          </button>
 
           <div class="form-footer">
-           <a th:href="@{/register}" class="btn-continue">← Back</a>
+            <a th:href="@{/register}" class="btn-continue">← Back</a>
 
-            <button type="submit" class="btn-continue">
-              Continue
-            
-            </button>
+            <button type="submit" class="btn-continue">Continue</button>
           </div>
         </form>
-
-        <p class="signin-link" style="margin-top: 16px">
-          <a th:href="@{/register/members/skip}">Skip this step →</a>
-        </p>
       </div>
     </div>
 
