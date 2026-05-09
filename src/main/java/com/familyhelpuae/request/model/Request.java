@@ -29,13 +29,13 @@ public class Request {
     String location;
 	
 	@Field(name="requestType")
-    RequestType requestType;
+    String requestType;
 	
 	@Field(name="urgencyLevel")
-    UrgencyLevel urgencyLevel; // e.g., "low", "medium", "high"
+    String urgencyLevel; // e.g., "low", "medium", "high"
 	
 	@Field(name="requestStatus")
-    RequestStatus requestStatus; // e.g., "open", "matched", "completed", "cancelled"
+    String requestStatus; // e.g., "open", "matched", "completed", "cancelled"
 	
 	@Field(name="createdAt")
     LocalDateTime createdAt; // when the request was made

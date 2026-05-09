@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.familyhelpuae.request.model.Request;
-import com.familyhelpuae.request.model.RequestStatus;
-import com.familyhelpuae.request.model.RequestType;
 import com.familyhelpuae.request.service.RequestService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,18 +56,18 @@ public class RequestController {
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Request>> getByStatus(@PathVariable RequestStatus status) {
+    public ResponseEntity<List<Request>> getByStatus(@PathVariable String status) {
         return ResponseEntity.ok(requestService.getRequestsByStatus(status));
     }
 
     @GetMapping("/type/{requestType}")
-    public ResponseEntity<List<Request>> getByType(@PathVariable RequestType requestType) {
+    public ResponseEntity<List<Request>> getByType(@PathVariable String requestType) {
         return ResponseEntity.ok(requestService.getRequestsByType(requestType));
     }
 
     @PutMapping("/{requestId}/status")
     public ResponseEntity<Request> updateStatus(@PathVariable String requestId,
-                                                 @RequestParam RequestStatus status) {
+                                                 @RequestParam String status) {
         return ResponseEntity.ok(requestService.updateStatus(requestId, status));
     }
     
