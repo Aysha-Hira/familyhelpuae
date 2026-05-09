@@ -36,17 +36,6 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 		return user.getRelationshipsByType(relationshipType);
 	}
 
-	public boolean hasRelationshipWithRegisteredUser(@NonNull String userId, @NonNull String anotherUserId) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
-		return user.hasRelationship(anotherUserId);
-	}
-
-	public boolean hasRelationshipWithNonRegisteredUser(@NonNull String userId, @NonNull String name,
-			@NonNull String email) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
-		return user.hasRelationship(name, email);
-	}
-
 	public User addRelationships(User user) {
 		for (UserRelationship relationship : user.getRelationships()) {
 			if (relationship.getUserId() != null) {
@@ -67,8 +56,12 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 			@NonNull String relationshipType) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
-		userRepository.findById(anotherUserID).orElseThrow(() -> new ResourceNotFound("User", "id", anotherUserID));
+		User anotherUser = userRepository.findById(anotherUserID)
+				.orElseThrow(() -> new ResourceNotFound("User", "id", anotherUserID));
 
+		if (user.equals(anotherUser))
+			throw new IllegalArgumentException("Relationship cannot be added to self");
+		
 		if (user.hasRelationship(anotherUserID))
 			throw new IllegalArgumentException(
 					"Relationship already exists between user " + userId + " and user " + anotherUserID);
@@ -85,8 +78,9 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		if (user.hasRelationship(name, email))
-			throw new IllegalArgumentException("Relationship already exists between user " + user.getFirstName() + " " + user.getLastName()
-					+ " and non-registered user with name " + name + " and email " + email);
+			throw new IllegalArgumentException(
+					"Relationship already exists between user " + user.getFirstName() + " " + user.getLastName()
+							+ " and non-registered user with name " + name + " and email " + email);
 
 		// add relationship to user
 		user.getRelationships().add(new UserRelationship(name, email, relationshipType));
@@ -104,7 +98,8 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 
 		if (!user.hasRelationship(anotherUserID))
 			throw new IllegalArgumentException(
-					"Relationship does not exist between user " + user.getFirstName() + " " + user.getLastName() + " and user " + anotherUserID);
+					"Relationship does not exist between user " + user.getFirstName() + " " + user.getLastName()
+							+ " and user " + anotherUserID);
 
 		// update relationship
 		user.updateRelationship(anotherUserID, relationshipType);
@@ -118,8 +113,9 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		if (!user.hasRelationship(name, email))
-			throw new IllegalArgumentException("Relationship does not exist between user " + user.getFirstName() + " " + user.getLastName()
-					+ " and non-registered user with name " + name + " and email " + email);
+			throw new IllegalArgumentException(
+					"Relationship does not exist between user " + user.getFirstName() + " " + user.getLastName()
+							+ " and non-registered user with name " + name + " and email " + email);
 
 		// update relationship
 		user.updateRelationship(name, email, relationshipType);
@@ -134,7 +130,8 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 
 		if (!user.hasRelationship(anotherUserID)) {
 			throw new IllegalArgumentException(
-					"Relationship does not exist between user " + user.getFirstName() + " " + user.getLastName() + " and user " + anotherUserID);
+					"Relationship does not exist between user " + user.getFirstName() + " " + user.getLastName()
+							+ " and user " + anotherUserID);
 		}
 
 		user.deleteRelationship(anotherUserID);
@@ -146,13 +143,25 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
 
 		if (!user.hasRelationship(name, email)) {
-			throw new IllegalArgumentException("Relationship does not exist between user " + user.getFirstName() + " " + user.getLastName()
-					+ " and non-registered user with name " + name + " and email " + email);
+			throw new IllegalArgumentException(
+					"Relationship does not exist between user " + user.getFirstName() + " " + user.getLastName()
+							+ " and non-registered user with name " + name + " and email " + email);
 		}
 
 		user.deleteRelationship(name, email);
 
 		userRepository.save(user);
+	}
+
+	public boolean hasRelationshipWithRegisteredUser(@NonNull String userId, @NonNull String anotherUserId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
+		return user.hasRelationship(anotherUserId);
+	}
+
+	public boolean hasRelationshipWithNonRegisteredUser(@NonNull String userId, @NonNull String name,
+			@NonNull String email) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "id", userId));
+		return user.hasRelationship(name, email);
 	}
 
 }
