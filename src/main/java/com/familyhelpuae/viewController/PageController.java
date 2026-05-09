@@ -1,17 +1,26 @@
 package com.familyhelpuae.viewController;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.familyhelpuae.auth.model.Login;
-import com.familyhelpuae.auth.model.Register;
-import com.familyhelpuae.auth.model.Relationship;
+import com.familyhelpuae.DTO.Login;
+import com.familyhelpuae.DTO.Register;
+import com.familyhelpuae.DTO.Relationship;
+import com.familyhelpuae.security.CustomUserDetails;
+import com.familyhelpuae.user.model.User;
+import com.familyhelpuae.user.service.UserProfileService;
 
 @Controller
 public class PageController {
+    private final UserProfileService userProfileService;
 
-    @GetMapping({ "/home" })
+    public PageController(UserProfileService userProfileService) {
+        this.userProfileService = userProfileService;
+    }
+
+    @GetMapping("/home")
     public String home() {
         return "home";
     }
@@ -27,12 +36,6 @@ public class PageController {
         model.addAttribute("register", new Register());
         return "register";
     }
-
-    // @GetMapping("/register/members")
-    // public String members(Model model) {
-    // model.addAttribute("register", new Register());
-    // return "register-members";
-    // }
 
     @GetMapping("/register/family")
     public String family(Model model) {
@@ -62,4 +65,14 @@ public class PageController {
     public String error() {
         return "error";
     }
+
+    @GetMapping("/profile")
+    public String profile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        User user = userDetails.getUser();
+        model.addAttribute("user", user);
+        model.addAttribute("familyMembers", userProfileService.getFamilyMembers(user.getUserID()));
+        return "userprofile";
+    }
+
+    // form to add offer form
 }
