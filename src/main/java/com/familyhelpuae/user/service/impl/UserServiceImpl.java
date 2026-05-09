@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -17,9 +18,11 @@ import com.familyhelpuae.user.service.UserService;
 @Validated
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new DuplucateEmailException("Email already exists: " + user.getEmail());
         }
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         // Set default values
         user.setVerified(false);
         user.setHasAccount(true);
@@ -73,11 +76,11 @@ public class UserServiceImpl implements UserService {
         if (user.getLastName() != null)
             existingUser.setLastName(user.getLastName());
 
-        if (userRepository.existsByEmail(user.getEmail()))
-            throw new DuplucateEmailException("Email already exists: " + user.getEmail());
-
-        if (user.getEmail() != null && !existingUser.getEmail().equals(user.getEmail()))
+        if (user.getEmail() != null && !existingUser.getEmail().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(user.getEmail()))
+                throw new DuplucateEmailException("Email already exists: " + user.getEmail());
             existingUser.setEmail(user.getEmail());
+        }
 
         if (user.getPhone() != null)
             existingUser.setPhone(user.getPhone());
@@ -102,5 +105,15 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFound("User", "id", id);
         }
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean authenticate(String email, String password) {
+        if (email == null || password == null)
+            return false;
+
+        return userRepository.findByEmail(email)
+                .map(user -> passwordEncoder.matches(password, user.getPassword()))
+                .orElse(false);
     }
 }

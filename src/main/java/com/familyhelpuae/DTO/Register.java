@@ -1,4 +1,4 @@
-package com.familyhelpuae.auth.model;
+package com.familyhelpuae.DTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,4 +36,5 @@ public class Register {
 
     // Add to Register.java
     private List<Relationship> relationships = new ArrayList<>();
+    private List<Family> families = new ArrayList<>();
 }

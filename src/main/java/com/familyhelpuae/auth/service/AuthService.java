@@ -1,6 +1,6 @@
 package com.familyhelpuae.auth.service;
 
-import com.familyhelpuae.auth.model.Register;
+import com.familyhelpuae.DTO.Register;
 import com.familyhelpuae.user.model.User;
 
 public interface AuthService {
@@ -11,5 +11,7 @@ public interface AuthService {
     public User completeRegistrationWithoutRelationship(Register pending);
 
     public User addRelationship(User savedUser, Register dto);
+
+    public User login(String email, String password);
 
 }

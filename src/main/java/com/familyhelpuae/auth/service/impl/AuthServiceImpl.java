@@ -6,9 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import com.familyhelpuae.auth.model.Register;
-import com.familyhelpuae.auth.model.Relationship;
+import com.familyhelpuae.DTO.Register;
+import com.familyhelpuae.DTO.Relationship;
 import com.familyhelpuae.auth.service.AuthService;
+import com.familyhelpuae.exception.UserNotFoundException;
 import com.familyhelpuae.user.model.User;
 import com.familyhelpuae.user.repository.UserRepository;
 import com.familyhelpuae.user.service.impl.UserRelationshipServiceImpl;
@@ -17,7 +18,6 @@ import com.familyhelpuae.user.service.impl.UserServiceImpl;
 @Service
 @Validated
 public class AuthServiceImpl implements AuthService {
-
     UserServiceImpl UserServiceImpl;
     UserRelationshipServiceImpl UserRelationshipService;
     UserRepository UserRepository;
@@ -119,6 +119,16 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return savedUser;
+    }
+
+    @Override
+    public User login(String email, String password) {
+        if (UserServiceImpl.authenticate(email, password)) {
+            return UserRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserNotFoundException(email));
+        }
+
+        return null;
     }
 
 }
