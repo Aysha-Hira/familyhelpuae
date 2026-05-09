@@ -12,19 +12,19 @@ import com.familyhelpuae.auth.service.AuthService;
 import com.familyhelpuae.exception.UserNotFoundException;
 import com.familyhelpuae.user.model.User;
 import com.familyhelpuae.user.repository.UserRepository;
-import com.familyhelpuae.user.service.impl.UserRelationshipServiceImpl;
-import com.familyhelpuae.user.service.impl.UserServiceImpl;
+import com.familyhelpuae.user.service.UserRelationshipService;
+import com.familyhelpuae.user.service.UserService;
 
 @Service
 @Validated
 public class AuthServiceImpl implements AuthService {
-    UserServiceImpl UserServiceImpl;
-    UserRelationshipServiceImpl UserRelationshipService;
+    UserService UserService;
+    UserRelationshipService UserRelationshipService;
     UserRepository UserRepository;
 
-    public AuthServiceImpl(UserServiceImpl UserServiceImpl, UserRelationshipServiceImpl UserRelationshipService,
+    public AuthServiceImpl(UserService UserService, UserRelationshipService UserRelationshipService,
             UserRepository UserRepository) {
-        this.UserServiceImpl = UserServiceImpl;
+        this.UserService = UserService;
         this.UserRelationshipService = UserRelationshipService;
         this.UserRepository = UserRepository;
     }
@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setVerified(false);
 
-        return UserServiceImpl.addUser(user);
+        return UserService.addUser(user);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
         User user = buildUserFromRegister(pending);
         user.setVerified(true);
 
-        User savedUser = UserServiceImpl.addUser(user);
+        User savedUser = UserService.addUser(user);
 
         if (hasRelationshipData(pending)) {
             addRelationship(savedUser, pending);
@@ -123,12 +123,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User login(String email, String password) {
-        if (UserServiceImpl.authenticate(email, password)) {
+        if (UserService.authenticate(email, password)) {
             return UserRepository.findByEmail(email)
                     .orElseThrow(() -> new UserNotFoundException(email));
         }
 
         return null;
+    }
+
+    @Override
+    public boolean isEmailExisting(String email) {
+       if (UserRepository.existsByEmail(email))
+            return true;
+
+       return false;
     }
 
 }

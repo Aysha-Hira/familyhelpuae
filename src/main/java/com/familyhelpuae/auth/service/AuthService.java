@@ -14,4 +14,6 @@ public interface AuthService {
 
     public User login(String email, String password);
 
+    public boolean isEmailExisting(String email);
+
 }

@@ -1,5 +1,6 @@
 package com.familyhelpuae.auth.controller;
 
+import com.familyhelpuae.auth.service.impl.AuthServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ import jakarta.validation.Valid;
 public class RegisterController {
     AuthService authService;
 
-    public RegisterController(AuthService authService) {
+    public RegisterController(AuthService authService, AuthServiceImpl authServiceImpl) {
         this.authService = authService;
     }
 
@@ -30,6 +31,11 @@ public class RegisterController {
 
         if (result.hasErrors())
             return "register";
+
+        if (authService.isEmailExisting(dto.getEmail())) {
+            result.rejectValue("email", "duplicate", "An account with this email already exists");
+            return "register";
+        }
 
         session.setAttribute("pendingUser", dto);
         // return "redirect:/register/family"; // add after family has been completed
