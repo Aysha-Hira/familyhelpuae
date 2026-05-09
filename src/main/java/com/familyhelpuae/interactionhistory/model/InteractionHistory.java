@@ -1,7 +1,7 @@
 package com.familyhelpuae.interactionhistory.model;
 
 public class InteractionHistory {
-    String interactionId; // requestId + OfferID
+    String interactionId; // requestId + | +OfferID
     String helpingFamilyId; // the family that helped in the interaction
     String helpedFamilyId; // the family that recieved help in the interaction
     String interactionType; // e.g., "help_request", "help_provided", "feedback_given"
@@ -10,5 +10,4 @@ public class InteractionHistory {
     double ratingForHelpingFamily; // rating given for the helping family (1-6)
     double ratingForHelpedFamily; // rating given for the helped family (1-6)
     String createdAt; // when the interaction occurred
-    String updatedAt; // when the interaction record was last updated
 }

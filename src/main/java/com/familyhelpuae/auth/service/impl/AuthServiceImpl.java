@@ -6,25 +6,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import com.familyhelpuae.auth.model.Register;
-import com.familyhelpuae.auth.model.Relationship;
+import com.familyhelpuae.DTO.Register;
+import com.familyhelpuae.DTO.Relationship;
 import com.familyhelpuae.auth.service.AuthService;
+import com.familyhelpuae.exception.UserNotFoundException;
 import com.familyhelpuae.user.model.User;
 import com.familyhelpuae.user.repository.UserRepository;
-import com.familyhelpuae.user.service.impl.UserRelationshipServiceImpl;
-import com.familyhelpuae.user.service.impl.UserServiceImpl;
+import com.familyhelpuae.user.service.UserRelationshipService;
+import com.familyhelpuae.user.service.UserService;
 
 @Service
 @Validated
 public class AuthServiceImpl implements AuthService {
-
-    UserServiceImpl UserServiceImpl;
-    UserRelationshipServiceImpl UserRelationshipService;
+    UserService UserService;
+    UserRelationshipService UserRelationshipService;
     UserRepository UserRepository;
 
-    public AuthServiceImpl(UserServiceImpl UserServiceImpl, UserRelationshipServiceImpl UserRelationshipService,
+    public AuthServiceImpl(UserService UserService, UserRelationshipService UserRelationshipService,
             UserRepository UserRepository) {
-        this.UserServiceImpl = UserServiceImpl;
+        this.UserService = UserService;
         this.UserRelationshipService = UserRelationshipService;
         this.UserRepository = UserRepository;
     }
@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setVerified(false);
 
-        return UserServiceImpl.addUser(user);
+        return UserService.addUser(user);
     }
 
     @Override
@@ -112,13 +112,31 @@ public class AuthServiceImpl implements AuthService {
         User user = buildUserFromRegister(pending);
         user.setVerified(true);
 
-        User savedUser = UserServiceImpl.addUser(user);
+        User savedUser = UserService.addUser(user);
 
         if (hasRelationshipData(pending)) {
             addRelationship(savedUser, pending);
         }
 
         return savedUser;
+    }
+
+    @Override
+    public User login(String email, String password) {
+        if (UserService.authenticate(email, password)) {
+            return UserRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserNotFoundException(email));
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean isEmailExisting(String email) {
+       if (UserRepository.existsByEmail(email))
+            return true;
+
+       return false;
     }
 
 }

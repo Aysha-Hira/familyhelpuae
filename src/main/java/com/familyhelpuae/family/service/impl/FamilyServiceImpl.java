@@ -3,11 +3,9 @@ package com.familyhelpuae.family.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.familyhelpuae.exception.DuplicateFamilyIDException;
 import com.familyhelpuae.exception.ResourceNotFound;
 import com.familyhelpuae.family.model.Family;
 import com.familyhelpuae.family.model.FamilyMember;
