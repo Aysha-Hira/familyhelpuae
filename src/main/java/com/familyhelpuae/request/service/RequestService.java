@@ -3,9 +3,6 @@ package com.familyhelpuae.request.service;
 import java.util.List;
 
 import com.familyhelpuae.request.model.Request;
-import com.familyhelpuae.request.model.RequestStatus;
-import com.familyhelpuae.request.model.RequestType;
-import com.familyhelpuae.request.model.UrgencyLevel;
 
 public interface RequestService {
 	
@@ -19,12 +16,12 @@ public interface RequestService {
     //Custom
     List<Request> getRequestsByFamily(String familyId);
     
-    List<Request> getRequestsByStatus(RequestStatus status);
-    Request updateStatus(String requestId, RequestStatus status);
+    List<Request> getRequestsByStatus(String status);
+    Request updateStatus(String requestId, String status);
     
-    List<Request> getRequestsByType(RequestType requestType);
+    List<Request> getRequestsByType(String requestType);
     
-    List<Request> getRequestsByUrgency(UrgencyLevel urgencyLevel);
+    List<Request> getRequestsByUrgency(String urgencyLevel);
     
     List<Request> getRequestsByTitle(String title);
     

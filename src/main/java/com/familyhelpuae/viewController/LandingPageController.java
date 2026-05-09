@@ -1,4 +1,4 @@
-package com.familyhelpuae;
+package com.familyhelpuae.viewController;
 
 import org.springframework.web.bind.annotation.*;
 
