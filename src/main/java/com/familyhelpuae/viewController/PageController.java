@@ -11,7 +11,7 @@ import com.familyhelpuae.auth.model.Relationship;
 @Controller
 public class PageController {
 
-    @GetMapping({ "/", "/home" })
+    @GetMapping({ "/home" })
     public String home() {
         return "home";
     }
