@@ -1,0 +1,235 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request – Family Help UAE</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/home.css" />
+    <link rel="stylesheet" href="/css/request.css" />
+  </head>
+  <body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">Family Help UAE</div>
+      <nav class="sidebar-nav">
+        <a href="/home" class="nav-item"><span class="nav-icon">🏠</span> Home</a>
+        <a href="/profile" class="nav-item"><span class="nav-icon">👤</span> My Profile</a>
+        <a href="/family" class="nav-item"><span class="nav-icon">👨‍👩‍👧‍👦</span> My Family</a>
+        <a href="/request/new" class="nav-item active"><span class="nav-icon">🙋</span> Post Request</a>
+        <a href="/offer/new" class="nav-item"><span class="nav-icon">🤝</span> Post Offer</a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/logout" class="nav-item logout"><span class="nav-icon">🚪</span> Sign Out</a>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <!-- VIEW MODE: shown when ?id=... is in the URL -->
+      <div id="viewMode" style="display:none">
+        <div class="back-link"><a href="/home">← Back to feed</a></div>
+
+        <div class="request-detail-card">
+          <div class="detail-header">
+            <div class="detail-badges">
+              <span class="type-badge" id="dType"></span>
+              <span class="urgency-badge" id="dUrgency"></span>
+              <span class="status-pill" id="dStatus"></span>
+            </div>
+            <h1 class="detail-title" id="dTitle"></h1>
+            <div class="detail-meta" id="dMeta"></div>
+          </div>
+
+          <div class="detail-body">
+            <h3>Description</h3>
+            <p id="dDesc"></p>
+          </div>
+
+          <div class="detail-actions" id="detailActions"></div>
+        </div>
+      </div>
+
+      <!-- CREATE MODE: shown when no ?id= in URL -->
+      <div id="createMode" style="display:none">
+        <div class="back-link"><a href="/home">← Back to feed</a></div>
+
+        <div class="form-card">
+          <h1 class="form-title">Post a Help Request</h1>
+          <p class="form-sub">Let your community know what you need support with.</p>
+
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="cTitle" placeholder="e.g. Need someone to pick up my child from school" />
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="cDesc" rows="4" placeholder="Describe what kind of help you need, when, and any details that would help families respond..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Type of Help</label>
+              <select id="cType">
+                <option value="">Select type...</option>
+                <option value="childcare">Childcare</option>
+                <option value="tutoring">Tutoring</option>
+                <option value="transport">Transport</option>
+                <option value="elder_care">Elder Care</option>
+                <option value="household">Household</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Urgency Level</label>
+              <select id="cUrgency">
+                <option value="low">🟢 Low – Flexible timing</option>
+                <option value="medium" selected>🟡 Medium – Within a few days</option>
+                <option value="high">🔴 High – Urgent</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" id="cLocation" placeholder="e.g. Al Reem Island, Abu Dhabi" />
+          </div>
+
+          <div class="form-group" style="display:none">
+            <!-- Hidden: filled from session/auth -->
+            <input type="text" id="cFamilyId" placeholder="Family ID" />
+            <input type="text" id="cUserId" placeholder="User ID" />
+          </div>
+
+          <div id="formError" class="form-error" style="display:none"></div>
+
+          <button class="btn-submit" onclick="submitRequest()">
+            Post Request
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const requestId = params.get('id');
+
+      if (requestId) {
+        document.getElementById('viewMode').style.display = 'block';
+        loadRequest(requestId);
+      } else {
+        document.getElementById('createMode').style.display = 'block';
+        loadUserContext();
+      }
+
+      async function loadRequest(id) {
+        try {
+          const res = await fetch(`/request/${id}`);
+          const r = await res.json();
+          renderDetail(r);
+        } catch(e) {
+          document.getElementById('viewMode').innerHTML = '<div class="empty">Request not found.</div>';
+        }
+      }
+
+      function renderDetail(r) {
+        document.getElementById('dType').textContent = formatType(r.requestType);
+        document.getElementById('dType').className = `type-badge`;
+
+        document.getElementById('dUrgency').textContent = formatUrgency(r.urgencyLevel);
+        document.getElementById('dUrgency').className = `urgency-badge urgency-${r.urgencyLevel}`;
+
+        document.getElementById('dStatus').textContent = r.requestStatus;
+        document.getElementById('dStatus').className = `status-pill status-${r.requestStatus}`;
+
+        document.getElementById('dTitle').textContent = r.requestTitle || 'Untitled';
+        document.getElementById('dMeta').innerHTML =
+          `<span>📍 ${r.location || 'UAE'}</span> · <span>Posted ${formatDate(r.createdAt)}</span>`;
+        document.getElementById('dDesc').textContent = r.requestDescription || 'No description provided.';
+
+        // Status update actions
+        if (r.requestStatus === 'open') {
+          document.getElementById('detailActions').innerHTML = `
+            <button class="btn-status btn-matched" onclick="updateStatus('${r.requestId}', 'matched')">Mark as Matched</button>
+            <button class="btn-status btn-cancel-req" onclick="updateStatus('${r.requestId}', 'cancelled')">Cancel Request</button>
+          `;
+        } else if (r.requestStatus === 'matched') {
+          document.getElementById('detailActions').innerHTML = `
+            <button class="btn-status btn-completed" onclick="updateStatus('${r.requestId}', 'completed')">Mark as Completed</button>
+          `;
+        }
+      }
+
+      async function updateStatus(id, status) {
+        await fetch(`/request/${id}/status?status=${status}`, { method: 'PUT' });
+        loadRequest(id);
+      }
+
+      async function loadUserContext() {
+        // TODO: pull familyId and userId from session/auth when integrated
+        // For now, leave fields empty for manual entry during testing
+      }
+
+      async function submitRequest() {
+        const title = document.getElementById('cTitle').value.trim();
+        const desc = document.getElementById('cDesc').value.trim();
+        const type = document.getElementById('cType').value;
+        const urgency = document.getElementById('cUrgency').value;
+        const location = document.getElementById('cLocation').value.trim();
+
+        if (!title || !type) {
+          showError('Title and Type are required.');
+          return;
+        }
+
+        const body = {
+          requestTitle: title,
+          requestDescription: desc,
+          requestType: type,
+          urgencyLevel: urgency,
+          location: location,
+          // TODO: set these from session when auth is integrated
+          requestingFamilyId: document.getElementById('cFamilyId').value || null,
+          requestingUserId: document.getElementById('cUserId').value || null,
+        };
+
+        try {
+          const res = await fetch('/request/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const created = await res.json();
+          window.location = `/request?id=${created.requestId}`;
+        } catch(e) {
+          showError('Could not post request. Please try again.');
+        }
+      }
+
+      function showError(msg) {
+        const el = document.getElementById('formError');
+        el.textContent = msg;
+        el.style.display = 'block';
+      }
+
+      function formatType(t) {
+        const map = { childcare: 'Childcare', tutoring: 'Tutoring', transport: 'Transport', elder_care: 'Elder Care', household: 'Household', other: 'Other' };
+        return map[t] || t;
+      }
+      function formatUrgency(u) {
+        const map = { high: '🔴 High', medium: '🟡 Medium', low: '🟢 Low' };
+        return map[u] || u;
+      }
+      function formatDate(d) {
+        if (!d) return '';
+        return new Date(d).toLocaleDateString('en-AE', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+    </script>
+  </body>
+</html>

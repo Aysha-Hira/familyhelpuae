@@ -24,6 +24,11 @@ public class PageController {
     public String home() {
         return "home";
     }
+    
+    @GetMapping({"/"})
+	public String landingPage() {
+		return "Landing Page for unregistered visitors";
+	}
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -73,6 +78,15 @@ public class PageController {
         model.addAttribute("familyMembers", userProfileService.getFamilyMembers(user.getUserID()));
         return "userprofile";
     }
+    
+    @GetMapping("/family")
+    public String familyProfile() { return "familyprofile"; }
+    
+    @GetMapping("/request/new")
+    public String newRequest() { return "request"; }
+    
+    @GetMapping("/request")
+    public String viewRequest() { return "request"; }
 
     // form to add offer form
 }

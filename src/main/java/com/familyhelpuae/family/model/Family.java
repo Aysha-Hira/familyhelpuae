@@ -43,4 +43,6 @@ public class Family {
 
     @Field(name = "updatedAt")
     LocalDateTime updatedAt;
+    
+    //TODO: Add feedback and ratings stuff
 }
