@@ -46,7 +46,7 @@ public class SecurityConfig {
     .authorizeHttpRequests(auth -> auth
     // Public endpoints
     .requestMatchers("/", "/home", "/login", "/register", "/css/**",
-    "/js/**").permitAll()
+    "/js/**", "/index", "/register/**", "/family/**", "/request/**").permitAll()
     .requestMatchers("/api/auth/**").permitAll() // Your auth API endpoints
     // Protected endpoints
     .requestMatchers("/user/**").hasAnyRole("MEMBER", "ADMIN")

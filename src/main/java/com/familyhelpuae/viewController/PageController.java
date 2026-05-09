@@ -27,7 +27,7 @@ public class PageController {
     
     @GetMapping({"/"})
 	public String landingPage() {
-		return "Landing Page for unregistered visitors";
+		return "index";
 	}
 
     @GetMapping("/login")

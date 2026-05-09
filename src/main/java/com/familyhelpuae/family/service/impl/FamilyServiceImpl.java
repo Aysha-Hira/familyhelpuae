@@ -30,6 +30,7 @@ public class FamilyServiceImpl implements FamilyService {
 	public Family saveFamily(Family newFamily) {
 		newFamily.setFamilyId(null);
 		newFamily.setFamilyTrustScore(0.0);
+		newFamily.setMembers(new ArrayList<>());
 		
 		LocalDateTime now = LocalDateTime.now();
 		newFamily.setCreatedAt(now);
@@ -51,6 +52,7 @@ public class FamilyServiceImpl implements FamilyService {
 		if(newFamily.getFamilyName() != null) existing.setFamilyName(newFamily.getFamilyName());
 		if(newFamily.getCountry() != null) existing.setCountry(newFamily.getCountry());
 		if(newFamily.getState() != null) existing.setState(newFamily.getState());
+		if (newFamily.getCity() != null) existing.setCity(newFamily.getCity());
 		if(newFamily.getMembers() != null) existing.setMembers(newFamily.getMembers());
 		
 		existing.setUpdatedAt(LocalDateTime.now());
@@ -142,6 +144,22 @@ public class FamilyServiceImpl implements FamilyService {
 		f.setFamilyTrustScore(score);
 		
 		updateFamily(f, familyId);
+	}
+	
+	public void calculateTrustScore(String familyId) {
+	    Family f = getFamilyById(familyId);
+	    List<FamilyMember> members = f.getMembers();
+	    
+	    // Basic formula: base score + bonus for member count + bonus for active members
+	    double base = 1.0;
+	    double memberBonus = Math.min(members.size() * 0.2, 1.0);
+	    double activeBonus = members.stream().filter(FamilyMember::getIsUser).count() * 0.1;
+	    
+	    // TODO: add completedInteractions * 0.5 and avgRating * 0.3 once interaction history is done
+	    double score = Math.min(base + memberBonus + activeBonus, 5.0);
+	    
+	    f.setFamilyTrustScore(score);
+	    familyRepo.save(f);
 	}
 
 	
