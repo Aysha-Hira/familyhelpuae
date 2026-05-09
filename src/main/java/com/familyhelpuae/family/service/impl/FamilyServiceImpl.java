@@ -73,7 +73,6 @@ public class FamilyServiceImpl implements FamilyService {
 
 	@Override
 	public List<Family> getFamiliesByName(String familyName) {
-		//TODO: Implement in Controller
 		return familyRepo.findByFamilyName(familyName);
 	}
 	
