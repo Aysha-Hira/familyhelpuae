@@ -117,6 +117,7 @@
               <span class="type-badge type-${r.requestType}">${formatType(r.requestType)}</span>
               <span class="urgency-badge urgency-${r.urgencyLevel}">${formatUrgency(r.urgencyLevel)}</span>
             </div>
+			<div class="card-user">👤 ${r.requestingUserName} · ${r.requestingFamilyName} ⭐ ${r.familyTrustScore?.toFixed(1)}</div>
             <h3 class="card-title">${r.requestTitle || 'Untitled Request'}</h3>
             <p class="card-desc">${r.requestDescription || ''}</p>
             <div class="card-footer">
@@ -139,7 +140,7 @@
         } else if (type) {
           loadRequests(`/request/type/${type}`);
         } else {
-          loadRequests('/request/status/open');
+			loadRequests('/request/feed');
         }
       }
 

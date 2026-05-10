@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.familyhelpuae.DTO.RequestResponseDTO;
 import com.familyhelpuae.request.model.Request;
 import com.familyhelpuae.request.service.RequestService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -76,5 +78,21 @@ public class RequestController {
         return ResponseEntity.ok(requestService.getRequestsByTitle(title));
     }
     
+    @PostMapping("/{requestId}/offers/{offerId}")
+    public ResponseEntity<Request> linkOffer(@PathVariable String requestId,
+                                              @PathVariable String offerId) {
+        return ResponseEntity.ok(requestService.linkOffer(requestId, offerId));
+    }
+
+    @DeleteMapping("/{requestId}/offers/{offerId}")
+    public ResponseEntity<Request> unlinkOffer(@PathVariable String requestId,
+                                                @PathVariable String offerId) {
+        return ResponseEntity.ok(requestService.unlinkOffer(requestId, offerId));
+    }
+    
+    @GetMapping("/feed")
+    public ResponseEntity<List<RequestResponseDTO>> getFeed() {
+        return ResponseEntity.ok(requestService.getOpenRequestsEnriched());
+    }
     
 }

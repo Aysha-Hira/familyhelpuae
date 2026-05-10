@@ -1,6 +1,8 @@
 package com.familyhelpuae.request.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.*;
@@ -46,5 +48,8 @@ public class Request {
 	
 	@Field(name="updatedAt")
 	LocalDateTime updatedAt; // when the request record was last updated
+	
+	@Field(name = "linkedOfferIds")
+	List<String> linkedOfferIds = new ArrayList<>(); // offers that have responded to this request
 
 }

@@ -3,22 +3,34 @@ package com.familyhelpuae.request.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.familyhelpuae.DTO.RequestResponseDTO;
 import com.familyhelpuae.exception.ResourceNotFound;
+import com.familyhelpuae.family.model.Family;
+import com.familyhelpuae.family.service.FamilyService;
 import com.familyhelpuae.request.model.*;
 import com.familyhelpuae.request.repository.RequestRepository;
 import com.familyhelpuae.request.service.RequestService;
+import com.familyhelpuae.user.model.User;
+import com.familyhelpuae.user.service.UserService;
 
 @Service
 public class RequestServiceImpl implements RequestService {
 	
 	private final RequestRepository requestRepo;
-	
-	public RequestServiceImpl(RequestRepository requestRepo) {
-		this.requestRepo = requestRepo;
-	}
+    private final UserService userService;
+    private final FamilyService familyService;
+
+    public RequestServiceImpl(RequestRepository requestRepo,
+                               UserService userService,
+                               FamilyService familyService) {
+        this.requestRepo = requestRepo;
+        this.userService = userService;
+        this.familyService = familyService;
+    }
 
 	@Override
 	public Request createRequest(Request request) {
@@ -98,6 +110,64 @@ public class RequestServiceImpl implements RequestService {
 	@Override
 	public List<Request> getRequestsByTitle(String title) {
 		return requestRepo.findByRequestTitle(title);
+	}
+	
+	@Override
+	public Request linkOffer(String requestId, String offerId) {
+	    Request request = getRequestById(requestId);
+	    if (request.getLinkedOfferIds() == null) request.setLinkedOfferIds(new ArrayList<>());
+	    if (!request.getLinkedOfferIds().contains(offerId)) {
+	        request.getLinkedOfferIds().add(offerId);
+	    }
+	    request.setUpdatedAt(LocalDateTime.now());
+	    return requestRepo.save(request);
+	}
+
+	@Override
+	public Request unlinkOffer(String requestId, String offerId) {
+	    Request request = getRequestById(requestId);
+	    if (request.getLinkedOfferIds() != null) {
+	        request.getLinkedOfferIds().remove(offerId);
+	    }
+	    request.setUpdatedAt(LocalDateTime.now());
+	    return requestRepo.save(request);
+	}
+	
+	@Override
+	public List<RequestResponseDTO> getOpenRequestsEnriched() {
+	    List<Request> requests = requestRepo.findByRequestStatus("open");
+	    return requests.stream().map(r -> {
+	        RequestResponseDTO dto = new RequestResponseDTO();
+	        dto.setRequestId(r.getRequestId());
+	        dto.setRequestTitle(r.getRequestTitle());
+	        dto.setRequestDescription(r.getRequestDescription());
+	        dto.setRequestType(r.getRequestType());
+	        dto.setUrgencyLevel(r.getUrgencyLevel());
+	        dto.setRequestStatus(r.getRequestStatus());
+	        dto.setLocation(r.getLocation());
+	        dto.setCreatedAt(r.getCreatedAt() != null ? r.getCreatedAt().toString() : null);
+	        dto.setRequestingUserId(r.getRequestingUserId());
+	        dto.setRequestingFamilyId(r.getRequestingFamilyId());
+
+	        // Enrich with user name
+	        try {
+	            User user = userService.getUserById(r.getRequestingUserId());
+	            dto.setRequestingUserName(user.getFirstName() + " " + user.getLastName());
+	        } catch (Exception e) {
+	            dto.setRequestingUserName("Unknown");
+	        }
+
+	        // Enrich with family name and trust score
+	        try {
+	            Family family = familyService.getFamilyById(r.getRequestingFamilyId());
+	            dto.setRequestingFamilyName(family.getFamilyName());
+	            dto.setFamilyTrustScore(family.getFamilyTrustScore());
+	        } catch (Exception e) {
+	            dto.setRequestingFamilyName("Unknown Family");
+	        }
+
+	        return dto;
+	    }).collect(Collectors.toList());
 	}
 
 }
