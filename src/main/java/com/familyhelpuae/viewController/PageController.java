@@ -3,13 +3,23 @@ package com.familyhelpuae.viewController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.familyhelpuae.auth.model.Login;
 import com.familyhelpuae.auth.model.Register;
 import com.familyhelpuae.auth.model.Relationship;
+import com.familyhelpuae.offer.model.Offer;
+import com.familyhelpuae.offer.service.offerService;
 
 @Controller
 public class PageController {
+
+    private final offerService offerService;
+
+    public PageController(offerService offerService) {
+        this.offerService = offerService;
+    }
 
     @GetMapping({ "/home" })
     public String home() {
@@ -61,5 +71,61 @@ public class PageController {
     @GetMapping({ "/error" })
     public String error() {
         return "error";
+    }
+
+    
+
+
+    // ========== OFFER PAGES ==========
+    
+    // Show the create offer form
+    @GetMapping("/offer/create")
+    public String showCreateOfferForm(Model model) {
+        model.addAttribute("offer", new Offer());
+        model.addAttribute("offerTypes", new String[]{"Childcare", "ElderlyCare", "Tutoring", "Household", "Transportation", "Emergency", "Other"});
+        return "create-offer";  // This loads src/main/resources/templates/create-offer.html
+    }
+    
+    // Handle the form submission from create-offer.html
+    @PostMapping("/offer/create")
+    public String createOffer(Offer offer, Model model) {
+        try {
+            // Get current logged-in user's family ID from session (you need to implement this)
+            // For now, using placeholder
+            offer.setOfferingFamilyId("currentFamilyId");  // Get from session
+            offer.setOfferingUserId("currentUserId");       // Get from session
+            
+            offerService.createOffer(offer);
+            return "redirect:/offer/my-offers";  // Redirect to view all offers after success
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Failed to create offer: " + e.getMessage());
+            model.addAttribute("offerTypes", new String[]{"Childcare", "ElderlyCare", "Tutoring", "Household", "Transportation", "Emergency", "Other"});
+            return "create-offer";
+        }
+    }
+    
+    // Show all offers for current user
+    @GetMapping("/offer/my-offers")
+    public String showMyOffers(Model model) {
+        // Get current user's offers (you need to implement getting current user ID)
+        String currentUserId = "currentUserId";  // Get from session
+        model.addAttribute("offers", offerService.getOffersByUser(currentUserId));
+        return "my-offers";
+    }
+    
+    // Show edit offer form
+    @GetMapping("/offer/edit/{offerId}")
+    public String showEditOfferForm(@PathVariable String offerId, Model model) {
+        Offer offer = offerService.getOfferById(offerId);
+        model.addAttribute("offer", offer);
+        model.addAttribute("offerTypes", new String[]{"Childcare", "ElderlyCare", "Tutoring", "Household", "Transportation", "Emergency", "Other"});
+        return "edit-offer";
+    }
+    
+    // Handle edit form submission
+    @PostMapping("/offer/edit/{offerId}")
+    public String updateOffer(@PathVariable String offerId, Offer updatedOffer) {
+        offerService.updateOffer(updatedOffer, offerId);
+        return "redirect:/offer/my-offers";
     }
 }
