@@ -1,11 +1,20 @@
 package com.familyhelpuae.viewController;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.familyhelpuae.DTO.Login;
 import com.familyhelpuae.DTO.Register;
@@ -15,16 +24,25 @@ import com.familyhelpuae.offer.service.offerService;
 import com.familyhelpuae.security.CustomUserDetails;
 import com.familyhelpuae.user.model.User;
 import com.familyhelpuae.user.service.UserProfileService;
+import com.familyhelpuae.interactionhistory.controller.InteractionHistoryController;
+
+import com.familyhelpuae.interactionhistory.model.InteractionHistory;
+import com.familyhelpuae.interactionhistory.service.interactionHistoryService;
+
 
 @Controller
+   
+@RestController
 public class PageController {
     private final UserProfileService userProfileService;
 
     private final offerService offerService;
+    private final interactionHistoryService interactionHistoryService;
 
-    public PageController(offerService offerService, UserProfileService userProfileService) {
+    public PageController(offerService offerService, UserProfileService userProfileService, interactionHistoryService interactionHistoryService) {
         this.offerService = offerService;
         this.userProfileService = userProfileService;
+        this.interactionHistoryService = interactionHistoryService;
     }
    
 
@@ -152,5 +170,21 @@ public class PageController {
     @GetMapping("/request")
     public String viewRequest() { return "request"; }
 
-    // form to add offer form
+ @GetMapping("/interaction/history")
+    public String showInteractionHistory(Model model) {
+        String currentFamilyId = "currentFamilyId";
+        model.addAttribute("interactions", interactionHistoryService.getInteractionsByFamily(currentFamilyId));
+        model.addAttribute("currentFamilyId", currentFamilyId);
+        model.addAttribute("trustScore", 5.0);
+        model.addAttribute("totalInteractions", interactionHistoryService.getInteractionsByFamily(currentFamilyId).size());
+        return "interaction-history";
+    }
+    
+    @PostMapping("/interaction/rate")
+    public String submitRating(@RequestParam String interactionId, 
+                               @RequestParam String role, 
+                               @RequestParam double rating) {
+        interactionHistoryService.addRating(interactionId, role, rating);
+        return "redirect:/interaction/history";
+    }
 }
