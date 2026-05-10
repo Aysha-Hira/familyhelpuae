@@ -79,11 +79,27 @@ public class PageController {
         return "userprofile";
     }
     
+ // In PageController:
     @GetMapping("/family")
-    public String familyProfile() { return "familyprofile"; }
+    public String familyProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        User user = userDetails.getUser();
+        // pass their first family ID if they have one
+        if (user.getFamilies() != null && !user.getFamilies().isEmpty()) {
+            model.addAttribute("familyId", user.getFamilies().get(0).getFamilyId());
+        }
+        return "familyprofile";
+    }
     
+ // In PageController for /request/new:
     @GetMapping("/request/new")
-    public String newRequest() { return "request"; }
+    public String newRequest(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        User user = userDetails.getUser();
+        model.addAttribute("userId", user.getUserID());
+        if (user.getFamilies() != null && !user.getFamilies().isEmpty()) {
+            model.addAttribute("familyId", user.getFamilies().get(0).getFamilyId());
+        }
+        return "request";
+    }
     
     @GetMapping("/request")
     public String viewRequest() { return "request"; }

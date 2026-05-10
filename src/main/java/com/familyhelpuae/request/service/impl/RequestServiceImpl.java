@@ -23,7 +23,8 @@ public class RequestServiceImpl implements RequestService {
 	@Override
 	public Request createRequest(Request request) {
 		// TODO: when auth is integrated - validate that requestingFamilyId belongs to the logged-in user
-		request.setRequestStatus("OPEN");
+		request.setRequestId(null);
+		request.setRequestStatus("open");
 		LocalDateTime now = LocalDateTime.now();
 		request.setCreatedAt(now);
 		request.setUpdatedAt(now);
@@ -48,7 +49,6 @@ public class RequestServiceImpl implements RequestService {
 		if(newRequest.getRequestDescription() != null) existing.setRequestDescription(newRequest.getRequestDescription());
 		if(newRequest.getLocation() != null) existing.setLocation(newRequest.getLocation());
 		if(newRequest.getRequestType() != null) existing.setRequestType(newRequest.getRequestType());
-		if(newRequest.getRequestStatus() != null) existing.setRequestStatus(newRequest.getRequestStatus());
 		if(newRequest.getUrgencyLevel() != null) existing.setUrgencyLevel(newRequest.getUrgencyLevel());
 		
 		existing.setUpdatedAt(LocalDateTime.now());
@@ -58,10 +58,10 @@ public class RequestServiceImpl implements RequestService {
 
 	@Override
 	public void deleteRequest(String requestId) {
-		// TODO: check if request exists before deleting, throw ResourceNotFound if not
-		// (currently silently does nothing if ID doesn't exist)
-		requestRepo.deleteById(requestId);
-		
+	    if (!requestRepo.existsById(requestId)) {
+	        throw new ResourceNotFound("Request", "requestId", requestId);
+	    }
+	    requestRepo.deleteById(requestId);
 	}
 
 	@Override

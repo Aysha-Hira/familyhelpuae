@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.*;
 
+import jakarta.validation.constraints.NotBlank;
+
 import lombok.Data;
 
 @Data
@@ -14,6 +16,7 @@ public class Request {
     String requestId; // auto-generated unique identifier by mongodb
 	
 	@Field(name="requestTitle")
+	@NotBlank(message = "Title is required")
 	String requestTitle;
 	
 	@Field(name="requestingFamilyId")
@@ -29,6 +32,7 @@ public class Request {
     String location;
 	
 	@Field(name="requestType")
+	@NotBlank(message = "Request type is required")
     String requestType;
 	
 	@Field(name="urgencyLevel")
@@ -42,4 +46,5 @@ public class Request {
 	
 	@Field(name="updatedAt")
 	LocalDateTime updatedAt; // when the request record was last updated
+
 }
