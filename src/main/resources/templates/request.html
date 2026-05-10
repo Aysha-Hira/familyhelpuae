@@ -4,31 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Request – Family Help UAE</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/css/home.css" />
     <link rel="stylesheet" href="/css/request.css" />
   </head>
   <body>
-
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-logo">Family Help UAE</div>
       <nav class="sidebar-nav">
-        <a href="/home" class="nav-item"><span class="nav-icon">🏠</span> Home</a>
-        <a href="/profile" class="nav-item"><span class="nav-icon">👤</span> My Profile</a>
-        <a href="/family" class="nav-item"><span class="nav-icon">👨‍👩‍👧‍👦</span> My Family</a>
-        <a href="/request/new" class="nav-item active"><span class="nav-icon">🙋</span> Post Request</a>
-        <a href="/offer/new" class="nav-item"><span class="nav-icon">🤝</span> Post Offer</a>
+        <a href="/home" class="nav-item"
+          ><span class="nav-icon">🏠</span> Home</a
+        >
+        <a href="/profile" class="nav-item"
+          ><span class="nav-icon">👤</span> My Profile</a
+        >
+        <a href="/family" class="nav-item"
+          ><span class="nav-icon">👨‍👩‍👧‍👦</span> My Family</a
+        >
+        <a href="/request/new" class="nav-item active"
+          ><span class="nav-icon">🙋</span> Post Request</a
+        >
+        <a href="/offer/my-offers" class="nav-item"
+          ><span class="nav-icon">🤝</span> Post Offer</a
+        >
       </nav>
       <div class="sidebar-footer">
-        <a href="/logout" class="nav-item logout"><span class="nav-icon">🚪</span> Sign Out</a>
+        <a href="/logout" class="nav-item logout"
+          ><span class="nav-icon">🚪</span> Sign Out</a
+        >
       </div>
     </aside>
 
     <main class="main">
-
       <!-- VIEW MODE: shown when ?id=... is in the URL -->
-      <div id="viewMode" style="display:none">
+      <div id="viewMode" style="display: none">
         <div class="back-link"><a href="/home">← Back to feed</a></div>
 
         <div class="request-detail-card">
@@ -52,21 +65,31 @@
       </div>
 
       <!-- CREATE MODE: shown when no ?id= in URL -->
-      <div id="createMode" style="display:none">
+      <div id="createMode" style="display: none">
         <div class="back-link"><a href="/home">← Back to feed</a></div>
 
         <div class="form-card">
           <h1 class="form-title">Post a Help Request</h1>
-          <p class="form-sub">Let your community know what you need support with.</p>
+          <p class="form-sub">
+            Let your community know what you need support with.
+          </p>
 
           <div class="form-group">
             <label>Title</label>
-            <input type="text" id="cTitle" placeholder="e.g. Need someone to pick up my child from school" />
+            <input
+              type="text"
+              id="cTitle"
+              placeholder="e.g. Need someone to pick up my child from school"
+            />
           </div>
 
           <div class="form-group">
             <label>Description</label>
-            <textarea id="cDesc" rows="4" placeholder="Describe what kind of help you need, when, and any details that would help families respond..."></textarea>
+            <textarea
+              id="cDesc"
+              rows="4"
+              placeholder="Describe what kind of help you need, when, and any details that would help families respond..."
+            ></textarea>
           </div>
 
           <div class="form-row">
@@ -86,7 +109,9 @@
               <label>Urgency Level</label>
               <select id="cUrgency">
                 <option value="low">🟢 Low – Flexible timing</option>
-                <option value="medium" selected>🟡 Medium – Within a few days</option>
+                <option value="medium" selected>
+                  🟡 Medium – Within a few days
+                </option>
                 <option value="high">🔴 High – Urgent</option>
               </select>
             </div>
@@ -94,26 +119,36 @@
 
           <div class="form-group">
             <label>Location</label>
-            <input type="text" id="cLocation" placeholder="e.g. Al Reem Island, Abu Dhabi" />
+            <input
+              type="text"
+              id="cLocation"
+              placeholder="e.g. Al Reem Island, Abu Dhabi"
+            />
           </div>
 
-          <div class="form-group" style="display:none">
+          <div class="form-group" style="display: none">
             <!-- Hidden: filled from session/auth -->
             <input type="text" id="cFamilyId" placeholder="Family ID" />
             <input type="text" id="cUserId" placeholder="User ID" />
           </div>
 
-          <div id="formError" class="form-error" style="display:none"></div>
+          <div id="formError" class="form-error" style="display: none"></div>
 
           <button class="btn-submit" onclick="submitRequest()">
             Post Request
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </button>
         </div>
       </div>
-
     </main>
 
     <script>
@@ -133,25 +168,34 @@
           const res = await fetch(`/request/${id}`);
           const r = await res.json();
           renderDetail(r);
-        } catch(e) {
-          document.getElementById('viewMode').innerHTML = '<div class="empty">Request not found.</div>';
+        } catch (e) {
+          document.getElementById('viewMode').innerHTML =
+            '<div class="empty">Request not found.</div>';
         }
       }
 
       function renderDetail(r) {
-        document.getElementById('dType').textContent = formatType(r.requestType);
+        document.getElementById('dType').textContent = formatType(
+          r.requestType
+        );
         document.getElementById('dType').className = `type-badge`;
 
-        document.getElementById('dUrgency').textContent = formatUrgency(r.urgencyLevel);
-        document.getElementById('dUrgency').className = `urgency-badge urgency-${r.urgencyLevel}`;
+        document.getElementById('dUrgency').textContent = formatUrgency(
+          r.urgencyLevel
+        );
+        document.getElementById('dUrgency').className =
+          `urgency-badge urgency-${r.urgencyLevel}`;
 
         document.getElementById('dStatus').textContent = r.requestStatus;
-        document.getElementById('dStatus').className = `status-pill status-${r.requestStatus}`;
+        document.getElementById('dStatus').className =
+          `status-pill status-${r.requestStatus}`;
 
-        document.getElementById('dTitle').textContent = r.requestTitle || 'Untitled';
+        document.getElementById('dTitle').textContent =
+          r.requestTitle || 'Untitled';
         document.getElementById('dMeta').innerHTML =
           `<span>📍 ${r.location || 'UAE'}</span> · <span>Posted ${formatDate(r.createdAt)}</span>`;
-        document.getElementById('dDesc').textContent = r.requestDescription || 'No description provided.';
+        document.getElementById('dDesc').textContent =
+          r.requestDescription || 'No description provided.';
 
         // Status update actions
         if (r.requestStatus === 'open') {
@@ -167,7 +211,9 @@
       }
 
       async function updateStatus(id, status) {
-        await fetch(`/request/${id}/status?status=${status}`, { method: 'PUT' });
+        await fetch(`/request/${id}/status?status=${status}`, {
+          method: 'PUT',
+        });
         loadRequest(id);
       }
 
@@ -195,7 +241,8 @@
           urgencyLevel: urgency,
           location: location,
           // TODO: set these from session when auth is integrated
-          requestingFamilyId: document.getElementById('cFamilyId').value || null,
+          requestingFamilyId:
+            document.getElementById('cFamilyId').value || null,
           requestingUserId: document.getElementById('cUserId').value || null,
         };
 
@@ -203,11 +250,11 @@
           const res = await fetch('/request/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
           });
           const created = await res.json();
           window.location = `/request?id=${created.requestId}`;
-        } catch(e) {
+        } catch (e) {
           showError('Could not post request. Please try again.');
         }
       }
@@ -219,7 +266,14 @@
       }
 
       function formatType(t) {
-        const map = { childcare: 'Childcare', tutoring: 'Tutoring', transport: 'Transport', elder_care: 'Elder Care', household: 'Household', other: 'Other' };
+        const map = {
+          childcare: 'Childcare',
+          tutoring: 'Tutoring',
+          transport: 'Transport',
+          elder_care: 'Elder Care',
+          household: 'Household',
+          other: 'Other',
+        };
         return map[t] || t;
       }
       function formatUrgency(u) {
@@ -228,7 +282,11 @@
       }
       function formatDate(d) {
         if (!d) return '';
-        return new Date(d).toLocaleDateString('en-AE', { day: 'numeric', month: 'short', year: 'numeric' });
+        return new Date(d).toLocaleDateString('en-AE', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
       }
     </script>
   </body>

@@ -32,11 +32,11 @@ public class PageController {
     public String home() {
         return "home";
     }
-    
-    @GetMapping({"/"})
-	public String landingPage() {
-		return "index";
-	}
+
+    @GetMapping({ "/" })
+    public String landingPage() {
+        return "index";
+    }
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -142,15 +142,37 @@ public class PageController {
         model.addAttribute("familyMembers", userProfileService.getFamilyMembers(user.getUserID()));
         return "userprofile";
     }
-    
-    @GetMapping("/family")
-    public String familyProfile() { return "familyprofile"; }
-    
-    @GetMapping("/request/new")
-    public String newRequest() { return "request"; }
-    
-    @GetMapping("/request")
-    public String viewRequest() { return "request"; }
 
-    // form to add offer form
+    @GetMapping("/family")
+    public String familyProfile() {
+        return "familyprofile";
+    }
+
+    @GetMapping("/request/new")
+    public String newRequest() {
+        return "request";
+    }
+
+    @GetMapping("/request")
+    public String viewRequest() {
+        return "request";
+    }
+
+    // FIX 1: Added /forgot-password route (was a dead link in login.html)
+    @GetMapping("/forgot-password")
+    public String forgotPassword() {
+        return "forgot-password";
+    }
+
+    @GetMapping("/register/pending-approval")
+    public String pendingApproval() {
+        return "register-pending-approval";
+    }
+
+    // Redirects back to the verification page
+    @GetMapping("/register/resend")
+    public String resendVerification() {
+        return "redirect:/register/verification";
+    }
+
 }

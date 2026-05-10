@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home – Family Help UAE</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/css/home.css" />
   </head>
   <body>
-
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-logo">Family Help UAE</div>
@@ -25,7 +27,7 @@
         <a href="/request/new" class="nav-item">
           <span class="nav-icon">🙋</span> Post Request
         </a>
-        <a href="/offer/new" class="nav-item">
+        <a href="/offer/my-offers" class="nav-item">
           <span class="nav-icon">🤝</span> Post Offer
         </a>
       </nav>
@@ -38,7 +40,6 @@
 
     <!-- Main Content -->
     <main class="main">
-
       <!-- Top bar -->
       <div class="topbar">
         <div>
@@ -72,7 +73,12 @@
           </select>
         </div>
         <div class="filter-group search-group">
-          <input type="text" id="searchTitle" placeholder="Search by title..." oninput="applyFilters()" />
+          <input
+            type="text"
+            id="searchTitle"
+            placeholder="Search by title..."
+            oninput="applyFilters()"
+          />
         </div>
       </div>
 
@@ -81,7 +87,6 @@
         <!-- Cards rendered by JS from API -->
         <div class="loading">Loading requests...</div>
       </div>
-
     </main>
 
     <script>
@@ -93,7 +98,8 @@
           const data = await res.json();
           renderFeed(data);
         } catch (e) {
-          document.getElementById('feed').innerHTML = '<div class="empty">Could not load requests.</div>';
+          document.getElementById('feed').innerHTML =
+            '<div class="empty">Could not load requests.</div>';
         }
       }
 
@@ -103,7 +109,9 @@
           feed.innerHTML = '<div class="empty">No requests found.</div>';
           return;
         }
-        feed.innerHTML = requests.map(r => `
+        feed.innerHTML = requests
+          .map(
+            (r) => `
           <div class="card" onclick="window.location='/request/${r.requestId}'">
             <div class="card-header">
               <span class="type-badge type-${r.requestType}">${formatType(r.requestType)}</span>
@@ -116,7 +124,9 @@
               <span class="card-date">${formatDate(r.createdAt)}</span>
             </div>
           </div>
-        `).join('');
+        `
+          )
+          .join('');
       }
 
       function applyFilters() {
@@ -134,7 +144,14 @@
       }
 
       function formatType(t) {
-        const map = { childcare: 'Childcare', tutoring: 'Tutoring', transport: 'Transport', elder_care: 'Elder Care', household: 'Household', other: 'Other' };
+        const map = {
+          childcare: 'Childcare',
+          tutoring: 'Tutoring',
+          transport: 'Transport',
+          elder_care: 'Elder Care',
+          household: 'Household',
+          other: 'Other',
+        };
         return map[t] || t;
       }
 
@@ -145,7 +162,10 @@
 
       function formatDate(d) {
         if (!d) return '';
-        return new Date(d).toLocaleDateString('en-AE', { day: 'numeric', month: 'short' });
+        return new Date(d).toLocaleDateString('en-AE', {
+          day: 'numeric',
+          month: 'short',
+        });
       }
 
       // Load open requests on page load
