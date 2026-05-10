@@ -134,7 +134,7 @@ public class PageController {
         offerService.updateOffer(updatedOffer, offerId);
         return "redirect:/offer/my-offers";
     }
-}
+
     @GetMapping("/profile")
     public String profile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         User user = userDetails.getUser();
