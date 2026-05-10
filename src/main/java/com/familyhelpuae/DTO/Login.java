@@ -1,4 +1,4 @@
-package com.familyhelpuae.auth.model;
+package com.familyhelpuae.DTO;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;

@@ -1,12 +1,155 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Help | Home</title>
-    
-</head>
-<body>
-    This is home page!!
-</body>
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home – Family Help UAE</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/home.css" />
+  </head>
+  <body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">Family Help UAE</div>
+      <nav class="sidebar-nav">
+        <a href="/home" class="nav-item active">
+          <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="/profile" class="nav-item">
+          <span class="nav-icon">👤</span> My Profile
+        </a>
+        <a href="/family" class="nav-item">
+          <span class="nav-icon">👨‍👩‍👧‍👦</span> My Family
+        </a>
+        <a href="/request/new" class="nav-item">
+          <span class="nav-icon">🙋</span> Post Request
+        </a>
+        <a href="/offer/new" class="nav-item">
+          <span class="nav-icon">🤝</span> Post Offer
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/logout" class="nav-item logout">
+          <span class="nav-icon">🚪</span> Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+      <!-- Top bar -->
+      <div class="topbar">
+        <div>
+          <h1 class="page-title">Explore</h1>
+          <p class="page-sub">Help requests from families in your community</p>
+        </div>
+        <a href="/request/new" class="btn-post">+ Post a Request</a>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <div class="filter-group">
+          <label>Type</label>
+          <select id="filterType" onchange="applyFilters()">
+            <option value="">All Types</option>
+            <option value="childcare">Childcare</option>
+            <option value="tutoring">Tutoring</option>
+            <option value="transport">Transport</option>
+            <option value="elder_care">Elder Care</option>
+            <option value="household">Household</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Urgency</label>
+          <select id="filterUrgency" onchange="applyFilters()">
+            <option value="">All</option>
+            <option value="high">🔴 High</option>
+            <option value="medium">🟡 Medium</option>
+            <option value="low">🟢 Low</option>
+          </select>
+        </div>
+        <div class="filter-group search-group">
+          <input type="text" id="searchTitle" placeholder="Search by title..." oninput="applyFilters()" />
+        </div>
+      </div>
+
+      <!-- Feed -->
+      <div class="feed" id="feed">
+        <!-- Cards rendered by JS from API -->
+        <div class="loading">Loading requests...</div>
+      </div>
+
+    </main>
+
+    <script>
+      const BASE = '';
+
+      async function loadRequests(url) {
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          renderFeed(data);
+        } catch (e) {
+          document.getElementById('feed').innerHTML = '<div class="empty">Could not load requests.</div>';
+        }
+      }
+
+      function renderFeed(requests) {
+        const feed = document.getElementById('feed');
+        if (!requests || requests.length === 0) {
+          feed.innerHTML = '<div class="empty">No requests found.</div>';
+          return;
+        }
+        feed.innerHTML = requests.map(r => `
+          <div class="card" onclick="window.location='/request/${r.requestId}'">
+            <div class="card-header">
+              <span class="type-badge type-${r.requestType}">${formatType(r.requestType)}</span>
+              <span class="urgency-badge urgency-${r.urgencyLevel}">${formatUrgency(r.urgencyLevel)}</span>
+            </div>
+            <h3 class="card-title">${r.requestTitle || 'Untitled Request'}</h3>
+            <p class="card-desc">${r.requestDescription || ''}</p>
+            <div class="card-footer">
+              <span class="card-location">📍 ${r.location || 'UAE'}</span>
+              <span class="card-date">${formatDate(r.createdAt)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function applyFilters() {
+        const type = document.getElementById('filterType').value;
+        const urgency = document.getElementById('filterUrgency').value;
+        const title = document.getElementById('searchTitle').value.trim();
+
+        if (title) {
+          loadRequests(`/request/title/${encodeURIComponent(title)}`);
+        } else if (type) {
+          loadRequests(`/request/type/${type}`);
+        } else {
+          loadRequests('/request/status/open');
+        }
+      }
+
+      function formatType(t) {
+        const map = { childcare: 'Childcare', tutoring: 'Tutoring', transport: 'Transport', elder_care: 'Elder Care', household: 'Household', other: 'Other' };
+        return map[t] || t;
+      }
+
+      function formatUrgency(u) {
+        const map = { high: '🔴 High', medium: '🟡 Medium', low: '🟢 Low' };
+        return map[u] || u;
+      }
+
+      function formatDate(d) {
+        if (!d) return '';
+        return new Date(d).toLocaleDateString('en-AE', { day: 'numeric', month: 'short' });
+      }
+
+      // Load open requests on page load
+      loadRequests('/request/status/open');
+    </script>
+  </body>
 </html>

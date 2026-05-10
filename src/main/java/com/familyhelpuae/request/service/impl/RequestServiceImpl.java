@@ -23,7 +23,7 @@ public class RequestServiceImpl implements RequestService {
 	@Override
 	public Request createRequest(Request request) {
 		// TODO: when auth is integrated - validate that requestingFamilyId belongs to the logged-in user
-		request.setRequestStatus(RequestStatus.Open);
+		request.setRequestStatus("OPEN");
 		LocalDateTime now = LocalDateTime.now();
 		request.setCreatedAt(now);
 		request.setUpdatedAt(now);
@@ -65,7 +65,7 @@ public class RequestServiceImpl implements RequestService {
 	}
 
 	@Override
-	public Request updateStatus(String requestId, RequestStatus status) {
+	public Request updateStatus(String requestId, String status) {
 		Request existing = getRequestById(requestId);
 		
         existing.setRequestStatus(status);
@@ -81,17 +81,17 @@ public class RequestServiceImpl implements RequestService {
 	}
 
 	@Override
-	public List<Request> getRequestsByStatus(RequestStatus status) {
+	public List<Request> getRequestsByStatus(String status) {
 	    return requestRepo.findByRequestStatus(status);
 	}
 
 	@Override
-	public List<Request> getRequestsByType(RequestType requestType) {
+	public List<Request> getRequestsByType(String requestType) {
 	    return requestRepo.findByRequestType(requestType);
 	}
 
 	@Override
-	public List<Request> getRequestsByUrgency(UrgencyLevel urgencyLevel) {
+	public List<Request> getRequestsByUrgency(String urgencyLevel) {
 	    return requestRepo.findByUrgencyLevel(urgencyLevel);
 	}
 

@@ -1,30 +1,42 @@
 package com.familyhelpuae.viewController;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.familyhelpuae.auth.model.Login;
-import com.familyhelpuae.auth.model.Register;
-import com.familyhelpuae.auth.model.Relationship;
+import com.familyhelpuae.DTO.Login;
+import com.familyhelpuae.DTO.Register;
+import com.familyhelpuae.DTO.Relationship;
 import com.familyhelpuae.offer.model.Offer;
 import com.familyhelpuae.offer.service.offerService;
+import com.familyhelpuae.security.CustomUserDetails;
+import com.familyhelpuae.user.model.User;
+import com.familyhelpuae.user.service.UserProfileService;
 
 @Controller
 public class PageController {
+    private final UserProfileService userProfileService;
 
     private final offerService offerService;
 
-    public PageController(offerService offerService) {
+    public PageController(offerService offerService, UserProfileService userProfileService) {
         this.offerService = offerService;
+        this.userProfileService = userProfileService;
     }
+   
 
-    @GetMapping({ "/home" })
+    @GetMapping("/home")
     public String home() {
         return "home";
     }
+    
+    @GetMapping({"/"})
+	public String landingPage() {
+		return "index";
+	}
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -37,12 +49,6 @@ public class PageController {
         model.addAttribute("register", new Register());
         return "register";
     }
-
-    // @GetMapping("/register/members")
-    // public String members(Model model) {
-    // model.addAttribute("register", new Register());
-    // return "register-members";
-    // }
 
     @GetMapping("/register/family")
     public String family(Model model) {
@@ -128,4 +134,23 @@ public class PageController {
         offerService.updateOffer(updatedOffer, offerId);
         return "redirect:/offer/my-offers";
     }
+}
+    @GetMapping("/profile")
+    public String profile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        User user = userDetails.getUser();
+        model.addAttribute("user", user);
+        model.addAttribute("familyMembers", userProfileService.getFamilyMembers(user.getUserID()));
+        return "userprofile";
+    }
+    
+    @GetMapping("/family")
+    public String familyProfile() { return "familyprofile"; }
+    
+    @GetMapping("/request/new")
+    public String newRequest() { return "request"; }
+    
+    @GetMapping("/request")
+    public String viewRequest() { return "request"; }
+
+    // form to add offer form
 }

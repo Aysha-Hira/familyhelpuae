@@ -316,3 +316,13 @@ body {
     text-decoration: none;
     color: black;
 }
+
+/* Hide panels by default */
+.panel {
+    display: none;
+}
+
+/* Show the panel only when it has the 'active' class */
+.panel.active {
+    display: block;
+}

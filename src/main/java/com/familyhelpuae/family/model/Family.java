@@ -10,33 +10,39 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import lombok.Data;
 
 @Data
-@Document(collection="family")
+@Document(collection = "family")
 public class Family {
-	@Id
+    @Id
     String familyId;
-	
-	@Field(name="familyName")
+
+    @Field(name = "familyName")
     String familyName;
-	
-	@Field(name="country")
+
+    @Field(name = "country")
     String country;
-	
-	@Field(name="state")
+
+    @Field(name = "state")
     String state;
-	
-	@Field(name="city")
+
+    @Field(name = "city")
     String city;
-	
-	@Field(name="familyTrustScore")
+
+    @Field(name = "familyTrustScore")
     double familyTrustScore;
     // this is for the family members, and their member roles
-	
-	@Field(name="members")
+
+    @Field(name = "members")
     List<FamilyMember> members;
-	
-	@Field(name="createdAt")
+
+    // TODO: Need to add controller + service for this
+    @Field(name = "familycode")
+    int FamilyCode;
+
+    @Field(name = "createdAt")
     LocalDateTime createdAt;
-	
-	@Field(name="updatedAt")
+
+    @Field(name = "updatedAt")
     LocalDateTime updatedAt;
+    
+    //TODO: Add feedback and ratings stuff
 }
