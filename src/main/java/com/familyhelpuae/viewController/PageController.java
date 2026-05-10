@@ -50,11 +50,11 @@ public class PageController {
     public String home() {
         return "home";
     }
-    
-    @GetMapping({"/"})
-	public String landingPage() {
-		return "index";
-	}
+
+    @GetMapping({ "/" })
+    public String landingPage() {
+        return "index";
+    }
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -160,31 +160,21 @@ public class PageController {
         model.addAttribute("familyMembers", userProfileService.getFamilyMembers(user.getUserID()));
         return "userprofile";
     }
-    
-    @GetMapping("/family")
-    public String familyProfile() { return "familyprofile"; }
-    
-    @GetMapping("/request/new")
-    public String newRequest() { return "request"; }
-    
-    @GetMapping("/request")
-    public String viewRequest() { return "request"; }
 
- @GetMapping("/interaction/history")
-    public String showInteractionHistory(Model model) {
-        String currentFamilyId = "currentFamilyId";
-        model.addAttribute("interactions", interactionHistoryService.getInteractionsByFamily(currentFamilyId));
-        model.addAttribute("currentFamilyId", currentFamilyId);
-        model.addAttribute("trustScore", 5.0);
-        model.addAttribute("totalInteractions", interactionHistoryService.getInteractionsByFamily(currentFamilyId).size());
-        return "interaction-history";
+    @GetMapping("/family")
+    public String familyProfile() {
+        return "familyprofile";
     }
-    
-    @PostMapping("/interaction/rate")
-    public String submitRating(@RequestParam String interactionId, 
-                               @RequestParam String role, 
-                               @RequestParam double rating) {
-        interactionHistoryService.addRating(interactionId, role, rating);
-        return "redirect:/interaction/history";
+
+    @GetMapping("/request/new")
+    public String newRequest() {
+        return "request";
     }
+
+    @GetMapping("/request")
+    public String viewRequest() {
+        return "request";
+    }
+
+    // form to add offer form
 }
