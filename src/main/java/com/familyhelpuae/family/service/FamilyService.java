@@ -27,6 +27,6 @@ public interface FamilyService {
 	
 	double getTrustScore(String familyId);
 	void setTrustScore(String familyId, double score);
-	void calculateTrustScore(String familyID);
+	void calculateTrustScore(String familyId);
 	
 }

@@ -52,4 +52,7 @@ public class Request {
 	@Field(name = "linkedOfferIds")
 	List<String> linkedOfferIds = new ArrayList<>(); // offers that have responded to this request
 
+	@Field(name = "linkedOfferId")
+	String linkedOfferId; // set when this request is made FOR a specific offer
+
 }

@@ -82,14 +82,19 @@ public class FamilyServiceImpl implements FamilyService {
 	// TODO: check if member already exists in family before adding (prevent duplicates)
 	@Override
 	public Family addMember(String familyId, FamilyMember member) {
-		Family f = getFamilyById(familyId);
-		List<FamilyMember> members = f.getMembers();
-		members.add(member);
-		
-		f.setMembers(members);
-		
-		return updateFamily(f, familyId);
-		
+	    Family f = getFamilyById(familyId);
+	    List<FamilyMember> members = f.getMembers();
+
+	    // Prevent duplicate members
+	    boolean alreadyExists = members.stream()
+	        .anyMatch(m -> m.getFamilyMemberId().equals(member.getFamilyMemberId()));
+	    if (alreadyExists) {
+	        throw new IllegalArgumentException("Member already exists in this family");
+	    }
+
+	    members.add(member);
+	    f.setMembers(members);
+	    return updateFamily(f, familyId);
 	}
 	
 	// TODO: when partner completes UserFamilyService - also call userFamilyService.removeFamily(member.getFamilyMemberId(), familyId)

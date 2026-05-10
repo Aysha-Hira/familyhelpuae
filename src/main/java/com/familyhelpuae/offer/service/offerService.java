@@ -18,5 +18,8 @@ public interface offerService {
     List<Offer> getOffersByStatus(@NonNull String status);
     List<Offer> getOffersByType(@NonNull String offerType);
     
+    Offer linkRequest(String offerId, String requestId);
+    Offer unlinkRequest(String offerId, String requestId);
+    
     Offer updateStatus(@NonNull String offerId, @NonNull String status);
 }

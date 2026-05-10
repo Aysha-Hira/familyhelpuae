@@ -10,30 +10,36 @@ import com.familyhelpuae.exception.ResourceNotFound;
 import com.familyhelpuae.offer.model.Offer;
 import com.familyhelpuae.offer.repository.offerRepository;
 import com.familyhelpuae.offer.service.offerService;
+import com.familyhelpuae.request.service.RequestService;
 import com.mongodb.lang.NonNull;
 
 @Service
 public class offerServiceImpl implements offerService {
 
     private final offerRepository offerRepository;
+    private final RequestService requestService;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    public offerServiceImpl(offerRepository offerRepository) {
+    public offerServiceImpl(offerRepository offerRepository, RequestService requestService) {
         this.offerRepository = offerRepository;
+        this.requestService = requestService;
     }
 
     @Override
     public Offer createOffer(Offer offer) {
         offer.setOfferId(null);
-        if (offer.getOfferStatus() == null) {
-            offer.setOfferStatus("open");
-        }
-        
+        offer.setOfferStatus("open");
         String now = LocalDateTime.now().format(formatter);
         offer.setCreatedAt(now);
         offer.setUpdatedAt(now);
-        
-        return offerRepository.save(offer);
+        Offer saved = offerRepository.save(offer);
+
+
+        if (offer.getLinkedRequestId() != null) {
+            requestService.linkOffer(offer.getLinkedRequestId(), saved.getOfferId());
+        }
+
+        return saved;
     }
 
     @Override
@@ -102,4 +108,18 @@ public class offerServiceImpl implements offerService {
         existing.setUpdatedAt(LocalDateTime.now().format(formatter));
         return offerRepository.save(existing);
     }
+    
+    @Override
+    public Offer linkRequest(String offerId, String requestId) {
+        Offer offer = getOfferById(offerId);
+        requestService.linkOffer(requestId, offerId);
+        offer.setUpdatedAt(LocalDateTime.now().format(formatter));
+        return offerRepository.save(offer);
+    }
+
+	@Override
+	public Offer unlinkRequest(String offerId, String requestId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

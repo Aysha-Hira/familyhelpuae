@@ -27,20 +27,21 @@ public class interactionHistoryServiceImpl implements interactionHistoryService 
 
     @Override
     public InteractionHistory recordInteraction(String helpingFamilyId, String helpedFamilyId,
-                                                String interactionType, String description) {
+                                                 String interactionType, String description,
+                                                 String requestId, String offerId) {
         InteractionHistory interaction = new InteractionHistory();
         interaction.setHelpingFamilyId(helpingFamilyId);
         interaction.setHelpedFamilyId(helpedFamilyId);
         interaction.setInteractionType(interactionType);
         interaction.setDescription(description);
+        interaction.setRequestId(requestId);
+        interaction.setOfferId(offerId);
         interaction.setStatus("pending");
         interaction.setRatingForHelpingFamily(0.0);
         interaction.setRatingForHelpedFamily(0.0);
-        
         String now = LocalDateTime.now().format(formatter);
         interaction.setCreatedAt(now);
         interaction.setUpdatedAt(now);
-        
         return interactionRepository.save(interaction);
     }
 

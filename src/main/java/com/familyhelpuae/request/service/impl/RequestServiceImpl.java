@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.familyhelpuae.interactionhistory.service.interactionHistoryService;
 
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,16 @@ public class RequestServiceImpl implements RequestService {
 	private final RequestRepository requestRepo;
     private final UserService userService;
     private final FamilyService familyService;
+    private final interactionHistoryService interactionHistoryService;
 
     public RequestServiceImpl(RequestRepository requestRepo,
                                UserService userService,
-                               FamilyService familyService) {
+                               FamilyService familyService,
+                               interactionHistoryService interactionHistoryService) {
         this.requestRepo = requestRepo;
         this.userService = userService;
         this.familyService = familyService;
+        this.interactionHistoryService = interactionHistoryService;
     }
 
 	@Override
@@ -78,15 +82,32 @@ public class RequestServiceImpl implements RequestService {
 
 	@Override
 	public Request updateStatus(String requestId, String status) {
-		Request existing = getRequestById(requestId);
-		
-        existing.setRequestStatus(status);
-        existing.setUpdatedAt(LocalDateTime.now());
-        // TODO: if status == "completed" -> call InteractionHistoryService.save()
-        // TODO: if status == "completed" -> call FamilyService.setTrustScore() for both families
-        return requestRepo.save(existing);
-	}
+	    Request existing = getRequestById(requestId);
+	    existing.setRequestStatus(status);
+	    existing.setUpdatedAt(LocalDateTime.now());
 
+	    if ("completed".equalsIgnoreCase(status)) {
+	        String helpingFamilyId = (existing.getLinkedOfferIds() != null
+	                && !existing.getLinkedOfferIds().isEmpty())
+	                ? existing.getLinkedOfferIds().get(0) // this is offerId, not familyId
+	                : null;
+
+	        interactionHistoryService.recordInteraction(
+	        	    helpingFamilyId != null ? helpingFamilyId : "unknown",
+	        	    existing.getRequestingFamilyId(),
+	        	    existing.getRequestType(),
+	        	    "Completed request: " + existing.getRequestTitle(),
+	        	    existing.getRequestId(),
+	        	    existing.getLinkedOfferIds() != null && !existing.getLinkedOfferIds().isEmpty()
+	        	        ? existing.getLinkedOfferIds().get(0) : null
+	        	);
+
+	        // Recalculate trust score for the requesting family
+	        familyService.calculateTrustScore(existing.getRequestingFamilyId());
+	    }
+
+	    return requestRepo.save(existing);
+	}
 	@Override
 	public List<Request> getRequestsByFamily(String familyId) {
 		return requestRepo.findByRequestingFamilyId(familyId);
@@ -135,39 +156,53 @@ public class RequestServiceImpl implements RequestService {
 	
 	@Override
 	public List<RequestResponseDTO> getOpenRequestsEnriched() {
-	    List<Request> requests = requestRepo.findByRequestStatus("open");
-	    return requests.stream().map(r -> {
-	        RequestResponseDTO dto = new RequestResponseDTO();
-	        dto.setRequestId(r.getRequestId());
-	        dto.setRequestTitle(r.getRequestTitle());
-	        dto.setRequestDescription(r.getRequestDescription());
-	        dto.setRequestType(r.getRequestType());
-	        dto.setUrgencyLevel(r.getUrgencyLevel());
-	        dto.setRequestStatus(r.getRequestStatus());
-	        dto.setLocation(r.getLocation());
-	        dto.setCreatedAt(r.getCreatedAt() != null ? r.getCreatedAt().toString() : null);
-	        dto.setRequestingUserId(r.getRequestingUserId());
-	        dto.setRequestingFamilyId(r.getRequestingFamilyId());
-
-	        // Enrich with user name
-	        try {
-	            User user = userService.getUserById(r.getRequestingUserId());
-	            dto.setRequestingUserName(user.getFirstName() + " " + user.getLastName());
-	        } catch (Exception e) {
-	            dto.setRequestingUserName("Unknown");
-	        }
-
-	        // Enrich with family name and trust score
-	        try {
-	            Family family = familyService.getFamilyById(r.getRequestingFamilyId());
-	            dto.setRequestingFamilyName(family.getFamilyName());
-	            dto.setFamilyTrustScore(family.getFamilyTrustScore());
-	        } catch (Exception e) {
-	            dto.setRequestingFamilyName("Unknown Family");
-	        }
-
-	        return dto;
-	    }).collect(Collectors.toList());
+	    return requestRepo.findByRequestStatus("open").stream().map(this::toDTO).collect(Collectors.toList());
 	}
 
+	@Override
+	public RequestResponseDTO getRequestEnriched(String requestId) {
+	    return toDTO(getRequestById(requestId));
+	}
+
+	@Override
+	public List<RequestResponseDTO> getRequestsByTypeEnriched(String type) {
+	    return requestRepo.findByRequestType(type).stream().map(this::toDTO).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<RequestResponseDTO> getRequestsByTitleEnriched(String title) {
+	    return requestRepo.findByRequestTitle(title).stream().map(this::toDTO).collect(Collectors.toList());
+	}
+
+	private RequestResponseDTO toDTO(Request r) {
+	    RequestResponseDTO dto = new RequestResponseDTO();
+	    dto.setRequestId(r.getRequestId());
+	    dto.setRequestTitle(r.getRequestTitle());
+	    dto.setRequestDescription(r.getRequestDescription());
+	    dto.setRequestType(r.getRequestType());
+	    dto.setUrgencyLevel(r.getUrgencyLevel());
+	    dto.setRequestStatus(r.getRequestStatus());
+	    dto.setLocation(r.getLocation());
+	    dto.setLinkedOfferIds(r.getLinkedOfferIds());
+	    dto.setCreatedAt(r.getCreatedAt() != null ? r.getCreatedAt().toString() : null);
+	    dto.setRequestingUserId(r.getRequestingUserId());
+	    dto.setRequestingFamilyId(r.getRequestingFamilyId());
+
+	    try {
+	        User user = userService.getUserById(r.getRequestingUserId());
+	        dto.setRequestingUserName(user.getFirstName() + " " + user.getLastName());
+	    } catch (Exception e) {
+	        dto.setRequestingUserName("Unknown");
+	    }
+
+	    try {
+	        Family family = familyService.getFamilyById(r.getRequestingFamilyId());
+	        dto.setRequestingFamilyName(family.getFamilyName());
+	        dto.setFamilyTrustScore(family.getFamilyTrustScore());
+	    } catch (Exception e) {
+	        dto.setRequestingFamilyName("Unknown Family");
+	    }
+
+	    return dto;
+	}
 }

@@ -32,10 +32,12 @@ public class InteractionHistoryController {
             @RequestParam String helpingFamilyId,
             @RequestParam String helpedFamilyId,
             @RequestParam String interactionType,
-            @RequestParam String description) {
+            @RequestParam String description,
+            @RequestParam(required = false) String requestId,
+            @RequestParam(required = false) String offerId) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(interactionService.recordInteraction(helpingFamilyId, helpedFamilyId, 
-                                                           interactionType, description));
+                .body(interactionService.recordInteraction(
+                    helpingFamilyId, helpedFamilyId, interactionType, description, requestId, offerId));
     }
 
     @GetMapping("/{interactionId}")

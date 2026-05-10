@@ -31,8 +31,6 @@ import com.familyhelpuae.interactionhistory.service.interactionHistoryService;
 
 
 @Controller
-   
-@RestController
 public class PageController {
     private final UserProfileService userProfileService;
 
@@ -110,17 +108,18 @@ public class PageController {
         return "create-offer";  // This loads src/main/resources/templates/create-offer.html
     }
     
-    // Handle the form submission from create-offer.html
     @PostMapping("/offer/create")
-    public String createOffer(Offer offer, Model model) {
+    public String createOffer(Offer offer,
+                              @AuthenticationPrincipal CustomUserDetails userDetails,
+                              Model model) {
         try {
-            // Get current logged-in user's family ID from session (you need to implement this)
-            // For now, using placeholder
-            offer.setOfferingFamilyId("currentFamilyId");  // Get from session
-            offer.setOfferingUserId("currentUserId");       // Get from session
-            
+            User user = userDetails.getUser();
+            offer.setOfferingUserId(user.getUserID());
+            if (user.getFamilies() != null && !user.getFamilies().isEmpty()) {
+                offer.setOfferingFamilyId(user.getFamilies().get(0).getFamilyId());
+            }
             offerService.createOffer(offer);
-            return "redirect:/offer/my-offers";  // Redirect to view all offers after success
+            return "redirect:/offer/my-offers";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Failed to create offer: " + e.getMessage());
             model.addAttribute("offerTypes", new String[]{"Childcare", "ElderlyCare", "Tutoring", "Household", "Transportation", "Emergency", "Other"});
@@ -128,11 +127,10 @@ public class PageController {
         }
     }
     
-    // Show all offers for current user
     @GetMapping("/offer/my-offers")
-    public String showMyOffers(Model model) {
-        // Get current user's offers (you need to implement getting current user ID)
-        String currentUserId = "currentUserId";  // Get from session
+    public String showMyOffers(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                Model model) {
+        String currentUserId = userDetails.getUser().getUserID();
         model.addAttribute("offers", offerService.getOffersByUser(currentUserId));
         return "my-offers";
     }
@@ -184,8 +182,24 @@ public class PageController {
     }
 
     @GetMapping("/request")
-    public String viewRequest() {
+    public String viewRequest(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        if (userDetails != null) {
+            User user = userDetails.getUser();
+            model.addAttribute("userId", user.getUserID());
+            if (user.getFamilies() != null && !user.getFamilies().isEmpty()) {
+                model.addAttribute("familyId", user.getFamilies().get(0).getFamilyId());
+            }
+        }
         return "request";
+    }
+    
+    @GetMapping("/interactions")
+    public String interactionsPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        User user = userDetails.getUser();
+        if (user.getFamilies() != null && !user.getFamilies().isEmpty()) {
+            model.addAttribute("familyId", user.getFamilies().get(0).getFamilyId());
+        }
+        return "Interaction-history";
     }
 
     // form to add offer form

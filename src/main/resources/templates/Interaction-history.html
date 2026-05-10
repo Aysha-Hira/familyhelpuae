@@ -238,6 +238,63 @@
     </div>
 </div>
 
+<!-- Add before the existing script in Interaction-history.html -->
+<script th:inline="javascript">
+    const familyId = /*[[${familyId}]]*/ null;
+</script>
+<script>
+    async function loadInteractions() {
+        if (!familyId) return;
+        const res = await fetch(`/api/interaction/family/${familyId}`);
+        const data = await res.json();
+        renderInteractions(data);
+    }
+
+    function renderInteractions(interactions) {
+        const container = document.getElementById('interactionsList');
+        if (!interactions || !interactions.length) {
+            container.innerHTML = '<div class="empty">No interactions yet.</div>';
+            return;
+        }
+        container.innerHTML = interactions.map(i => `
+            <div class="interaction-card">
+                <div class="int-header">
+                    <span class="int-type">${i.interactionType || 'Help'}</span>
+                    <span class="int-status status-${i.status}">${i.status}</span>
+                </div>
+                <p class="int-desc">${i.description || ''}</p>
+                <div class="int-meta">
+                    ${i.helpingFamilyId === familyId
+                        ? '🤝 You helped another family'
+                        : '🙏 You received help'}
+                </div>
+                ${i.status === 'pending' ? `
+                <div class="int-rating">
+                    <label>Rate this interaction (1–6):</label>
+                    <input type="number" min="1" max="6" id="rating-${i.interactionId}" />
+                    <button onclick="submitRating('${i.interactionId}')">Submit Rating</button>
+                </div>` : `
+                <div class="int-ratings">
+                    ⭐ Helping: ${i.ratingForHelpingFamily} · Helped: ${i.ratingForHelpedFamily}
+                </div>`}
+            </div>
+        `).join('');
+    }
+
+    async function submitRating(interactionId) {
+        const rating = document.getElementById(`rating-${interactionId}`).value;
+        // role = 'helping' if we are the helping family, 'helped' if we received help
+        const interaction = await (await fetch(`/api/interaction/${interactionId}`)).json();
+        const role = interaction.helpingFamilyId === familyId ? 'helped' : 'helping';
+        await fetch(`/api/interaction/${interactionId}/rate?role=${role}&rating=${rating}`, {
+            method: 'PUT'
+        });
+        loadInteractions();
+    }
+
+    loadInteractions();
+</script>
+
 <script>
     document.querySelectorAll('.rating-stars').forEach(starContainer => {
         const stars = starContainer.querySelectorAll('.star');

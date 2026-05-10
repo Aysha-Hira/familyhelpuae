@@ -77,4 +77,10 @@ public class offerController {
     public ResponseEntity<Offer> updateStatus(@PathVariable String offerId, @RequestParam String status) {
         return ResponseEntity.ok(offerService.updateStatus(offerId, status));
     }
+    
+    @PostMapping("/{offerId}/requests/{requestId}")
+    public ResponseEntity<Offer> linkRequest(@PathVariable String offerId,
+                                              @PathVariable String requestId) {
+        return ResponseEntity.ok(offerService.linkRequest(offerId, requestId));
+    }
 }

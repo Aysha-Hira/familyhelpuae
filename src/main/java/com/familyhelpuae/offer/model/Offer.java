@@ -31,7 +31,10 @@ public class Offer {
     @Field("offerStatus")
     private String offerStatus;
     
-    @Field("createdAt")
+    @Field("linkedRequestId")
+    private String linkedRequestId;
+
+	@Field("createdAt")
     private String createdAt;
     
     @Field("updatedAt")
@@ -69,6 +72,10 @@ public class Offer {
     public String getOfferStatus() {
         return offerStatus;
     }
+    
+    public String getLinkedRequestId() {
+		return linkedRequestId;
+	}
 
     public String getCreatedAt() {
         return createdAt;
@@ -110,6 +117,10 @@ public class Offer {
     public void setOfferStatus(String offerStatus) {
         this.offerStatus = offerStatus;
     }
+    
+    public void setLinkedRequestId(String linkedRequestId) {
+		this.linkedRequestId = linkedRequestId;
+	}
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;

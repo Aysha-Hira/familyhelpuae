@@ -45,8 +45,10 @@ public class SecurityConfig {
     .csrf(csrf -> csrf.disable()) // Disable for API (enable for forms if needed)
     .authorizeHttpRequests(auth -> auth
     // Public endpoints
-    .requestMatchers("/", "/home", "/login", "/register", "/css/**",
-    "/js/**", "/index", "/register/**", "/family/**", "/request/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+    		.requestMatchers("/", "/home", "/login", "/register", "/css/**",
+    			    "/js/**", "/index", "/register/**", "/family/**", "/request/**",
+    			    "/offer/**", "/api/interaction/**",
+    			    "/swagger-ui/**", "/v3/api-docs/**").permitAll()
     .requestMatchers("/api/auth/**").permitAll() // Your auth API endpoints
     // Protected endpoints
     .requestMatchers("/user/**").hasAnyRole("MEMBER", "ADMIN")

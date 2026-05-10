@@ -7,8 +7,9 @@ import com.familyhelpuae.interactionhistory.model.InteractionHistory;
 public interface interactionHistoryService {
     
     // Create
-    InteractionHistory recordInteraction(String helpingFamilyId, String helpedFamilyId, 
-                                         String interactionType, String description);
+    InteractionHistory recordInteraction(String helpingFamilyId, String helpedFamilyId,
+            String interactionType, String description,
+            String requestId, String offerId);
     
     // Read
     InteractionHistory getInteractionById(String interactionId);

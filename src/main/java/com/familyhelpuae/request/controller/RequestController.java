@@ -95,4 +95,9 @@ public class RequestController {
         return ResponseEntity.ok(requestService.getOpenRequestsEnriched());
     }
     
+    @GetMapping("/enriched/{requestId}")
+    public ResponseEntity<RequestResponseDTO> getEnrichedRequest(@PathVariable String requestId) {
+        return ResponseEntity.ok(requestService.getRequestEnriched(requestId));
+    }
+    
 }

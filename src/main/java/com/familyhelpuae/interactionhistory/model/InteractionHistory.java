@@ -34,6 +34,12 @@ public class InteractionHistory {
     @Field("ratingForHelpedFamily")
     private double ratingForHelpedFamily;
     
+    @Field("requestId")
+    private String requestId;
+
+    @Field("offerId")
+    private String offerId;
+    
     @Field("createdAt")
     private String createdAt;
     
@@ -49,6 +55,8 @@ public class InteractionHistory {
     public String getStatus() { return status; }
     public double getRatingForHelpingFamily() { return ratingForHelpingFamily; }
     public double getRatingForHelpedFamily() { return ratingForHelpedFamily; }
+    public String getRequestId() { return requestId; }
+    public String getOfferId() { return offerId; }
     public String getCreatedAt() { return createdAt; }
     public String getUpdatedAt() { return updatedAt; }
 
@@ -61,6 +69,8 @@ public class InteractionHistory {
     public void setStatus(String status) { this.status = status; }
     public void setRatingForHelpingFamily(double ratingForHelpingFamily) { this.ratingForHelpingFamily = ratingForHelpingFamily; }
     public void setRatingForHelpedFamily(double ratingForHelpedFamily) { this.ratingForHelpedFamily = ratingForHelpedFamily; }
+    public void setRequestId(String requestId) { this.requestId = requestId; }
+    public void setOfferId(String offerId) { this.offerId = offerId; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 

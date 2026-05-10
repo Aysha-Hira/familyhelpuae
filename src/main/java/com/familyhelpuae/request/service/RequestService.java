@@ -28,6 +28,10 @@ public interface RequestService {
     Request unlinkOffer(String requestId, String offerId);
     
     List<RequestResponseDTO> getOpenRequestsEnriched();
+    RequestResponseDTO getRequestEnriched(String requestId);
+    
+    List<RequestResponseDTO> getRequestsByTypeEnriched(String type);
+    List<RequestResponseDTO> getRequestsByTitleEnriched(String title);
     
     // TODO: when interaction history implemented - on completion call InteractionHistoryService.save()
     // TODO: when trust score implemented - on completion call FamilyService.setTrustScore()
