@@ -4,29 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Family Profile – Family Help UAE</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/css/home.css" />
     <link rel="stylesheet" href="/css/familyprofile.css" />
   </head>
   <body>
-
     <!-- Sidebar (same as home) -->
     <aside class="sidebar">
       <div class="sidebar-logo">Family Help UAE</div>
       <nav class="sidebar-nav">
-        <a href="/home" class="nav-item"><span class="nav-icon">🏠</span> Home</a>
-        <a href="/profile" class="nav-item"><span class="nav-icon">👤</span> My Profile</a>
-        <a href="/family" class="nav-item active"><span class="nav-icon">👨‍👩‍👧‍👦</span> My Family</a>
-        <a href="/request/new" class="nav-item"><span class="nav-icon">🙋</span> Post Request</a>
-        <a href="/offer/new" class="nav-item"><span class="nav-icon">🤝</span> Post Offer</a>
+        <a href="/home" class="nav-item"
+          ><span class="nav-icon">🏠</span> Home</a
+        >
+        <a href="/profile" class="nav-item"
+          ><span class="nav-icon">👤</span> My Profile</a
+        >
+        <a href="/family" class="nav-item active"
+          ><span class="nav-icon">👨‍👩‍👧‍👦</span> My Family</a
+        >
+        <a href="/request/new" class="nav-item"
+          ><span class="nav-icon">🙋</span> Post Request</a
+        >
+        <a href="/offer/my-offers" class="nav-item"
+          ><span class="nav-icon">🤝</span> Post Offer</a
+        >
       </nav>
       <div class="sidebar-footer">
-        <a href="/logout" class="nav-item logout"><span class="nav-icon">🚪</span> Sign Out</a>
+        <a href="/logout" class="nav-item logout"
+          ><span class="nav-icon">🚪</span> Sign Out</a
+        >
       </div>
     </aside>
 
     <main class="main">
-
       <!-- Family Header -->
       <div class="family-header">
         <div class="family-avatar" id="familyAvatar">👨‍👩‍👧‍👦</div>
@@ -36,14 +49,16 @@
           <div class="trust-score-wrap">
             <span class="trust-label">Trust Score</span>
             <span class="trust-value" id="trustScore">–</span>
-            <div class="trust-bar"><div class="trust-fill" id="trustFill"></div></div>
+            <div class="trust-bar">
+              <div class="trust-fill" id="trustFill"></div>
+            </div>
           </div>
         </div>
         <button class="btn-edit" onclick="toggleEdit()">Edit Family</button>
       </div>
 
       <!-- Edit Form (hidden by default) -->
-      <div class="edit-panel" id="editPanel" style="display:none">
+      <div class="edit-panel" id="editPanel" style="display: none">
         <h3>Edit Family Details</h3>
         <div class="form-row">
           <div class="form-group">
@@ -75,15 +90,21 @@
       <div class="section">
         <div class="section-header">
           <h2 class="section-title">Family Members</h2>
-          <button class="btn-add-member" onclick="showAddMember()">+ Add Member</button>
+          <button class="btn-add-member" onclick="showAddMember()">
+            + Add Member
+          </button>
         </div>
 
         <!-- Add Member Form (hidden) -->
-        <div class="add-member-panel" id="addMemberPanel" style="display:none">
+        <div class="add-member-panel" id="addMemberPanel" style="display: none">
           <div class="form-row">
             <div class="form-group">
               <label>User ID</label>
-              <input type="text" id="newMemberId" placeholder="Paste the user's ID" />
+              <input
+                type="text"
+                id="newMemberId"
+                placeholder="Paste the user's ID"
+              />
             </div>
             <div class="form-group">
               <label>Role</label>
@@ -114,7 +135,6 @@
           <div class="loading">Loading requests...</div>
         </div>
       </div>
-
     </main>
 
     <script>
@@ -128,19 +148,22 @@
           const res = await fetch(`/family/${familyId}`);
           familyData = await res.json();
           renderFamily(familyData);
-        } catch(e) {
-          document.getElementById('familyName').textContent = 'Family not found';
+        } catch (e) {
+          document.getElementById('familyName').textContent =
+            'Family not found';
         }
       }
 
       function renderFamily(f) {
-        document.getElementById('familyName').textContent = f.familyName || 'Unnamed Family';
+        document.getElementById('familyName').textContent =
+          f.familyName || 'Unnamed Family';
         document.getElementById('familyMeta').innerHTML =
           `<span>📍 ${[f.city, f.state, f.country].filter(Boolean).join(', ') || 'UAE'}</span>`;
 
         const score = f.familyTrustScore || 0;
         document.getElementById('trustScore').textContent = score.toFixed(1);
-        document.getElementById('trustFill').style.width = `${Math.min(score * 20, 100)}%`;
+        document.getElementById('trustFill').style.width =
+          `${Math.min(score * 20, 100)}%`;
 
         // Pre-fill edit form
         document.getElementById('editName').value = f.familyName || '';
@@ -157,7 +180,9 @@
           grid.innerHTML = '<div class="empty-small">No members yet.</div>';
           return;
         }
-        grid.innerHTML = members.map(m => `
+        grid.innerHTML = members
+          .map(
+            (m) => `
           <div class="member-card">
             <div class="member-avatar">${m.isAdmin ? '👑' : '👤'}</div>
             <div class="member-info">
@@ -166,7 +191,9 @@
             </div>
             <button class="btn-remove" onclick="removeMember('${m.familyMemberId}', ${m.isAdmin}, ${m.isUser})">✕</button>
           </div>
-        `).join('');
+        `
+          )
+          .join('');
       }
 
       async function loadRequests() {
@@ -175,10 +202,13 @@
           const requests = await res.json();
           const list = document.getElementById('requestsList');
           if (!requests.length) {
-            list.innerHTML = '<div class="empty-small">No requests posted yet.</div>';
+            list.innerHTML =
+              '<div class="empty-small">No requests posted yet.</div>';
             return;
           }
-          list.innerHTML = requests.map(r => `
+          list.innerHTML = requests
+            .map(
+              (r) => `
             <div class="request-row" onclick="window.location='/request/${r.requestId}'">
               <div>
                 <div class="rr-title">${r.requestTitle || 'Untitled'}</div>
@@ -186,9 +216,12 @@
               </div>
               <span class="status-pill status-${r.requestStatus}">${r.requestStatus}</span>
             </div>
-          `).join('');
-        } catch(e) {
-          document.getElementById('requestsList').innerHTML = '<div class="empty-small">Could not load requests.</div>';
+          `
+            )
+            .join('');
+        } catch (e) {
+          document.getElementById('requestsList').innerHTML =
+            '<div class="empty-small">Could not load requests.</div>';
         }
       }
 
@@ -207,23 +240,32 @@
         await fetch(`/family/update/${familyId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         });
         toggleEdit();
         loadFamily();
       }
 
-      function showAddMember() { document.getElementById('addMemberPanel').style.display = 'block'; }
-      function hideAddMember() { document.getElementById('addMemberPanel').style.display = 'none'; }
+      function showAddMember() {
+        document.getElementById('addMemberPanel').style.display = 'block';
+      }
+      function hideAddMember() {
+        document.getElementById('addMemberPanel').style.display = 'none';
+      }
 
       async function addMember() {
         const memberId = document.getElementById('newMemberId').value.trim();
-        const isAdmin = document.getElementById('newMemberAdmin').value === 'true';
+        const isAdmin =
+          document.getElementById('newMemberAdmin').value === 'true';
         if (!memberId) return;
         await fetch(`/family/${familyId}/members`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ familyMemberId: memberId, isAdmin, isUser: true })
+          body: JSON.stringify({
+            familyMemberId: memberId,
+            isAdmin,
+            isUser: true,
+          }),
         });
         hideAddMember();
         loadFamily();
@@ -234,7 +276,7 @@
         await fetch(`/family/${familyId}/members`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ familyMemberId: memberId, isAdmin, isUser })
+          body: JSON.stringify({ familyMemberId: memberId, isAdmin, isUser }),
         });
         loadFamily();
       }

@@ -1,34 +1,60 @@
 package com.familyhelpuae.viewController;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.familyhelpuae.DTO.Login;
 import com.familyhelpuae.DTO.Register;
 import com.familyhelpuae.DTO.Relationship;
+import com.familyhelpuae.offer.model.Offer;
+import com.familyhelpuae.offer.service.offerService;
 import com.familyhelpuae.security.CustomUserDetails;
 import com.familyhelpuae.user.model.User;
 import com.familyhelpuae.user.service.UserProfileService;
+import com.familyhelpuae.interactionhistory.controller.InteractionHistoryController;
+
+import com.familyhelpuae.interactionhistory.model.InteractionHistory;
+import com.familyhelpuae.interactionhistory.service.interactionHistoryService;
+
 
 @Controller
+   
+@RestController
 public class PageController {
     private final UserProfileService userProfileService;
 
-    public PageController(UserProfileService userProfileService) {
+    private final offerService offerService;
+    private final interactionHistoryService interactionHistoryService;
+
+    public PageController(offerService offerService, UserProfileService userProfileService, interactionHistoryService interactionHistoryService) {
+        this.offerService = offerService;
         this.userProfileService = userProfileService;
+        this.interactionHistoryService = interactionHistoryService;
     }
+   
 
     @GetMapping("/home")
     public String home() {
         return "home";
     }
-    
-    @GetMapping({"/"})
-	public String landingPage() {
-		return "index";
-	}
+
+    @GetMapping({ "/" })
+    public String landingPage() {
+        return "index";
+    }
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -71,6 +97,62 @@ public class PageController {
         return "error";
     }
 
+    
+
+
+    // ========== OFFER PAGES ==========
+    
+    // Show the create offer form
+    @GetMapping("/offer/create")
+    public String showCreateOfferForm(Model model) {
+        model.addAttribute("offer", new Offer());
+        model.addAttribute("offerTypes", new String[]{"Childcare", "ElderlyCare", "Tutoring", "Household", "Transportation", "Emergency", "Other"});
+        return "create-offer";  // This loads src/main/resources/templates/create-offer.html
+    }
+    
+    // Handle the form submission from create-offer.html
+    @PostMapping("/offer/create")
+    public String createOffer(Offer offer, Model model) {
+        try {
+            // Get current logged-in user's family ID from session (you need to implement this)
+            // For now, using placeholder
+            offer.setOfferingFamilyId("currentFamilyId");  // Get from session
+            offer.setOfferingUserId("currentUserId");       // Get from session
+            
+            offerService.createOffer(offer);
+            return "redirect:/offer/my-offers";  // Redirect to view all offers after success
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Failed to create offer: " + e.getMessage());
+            model.addAttribute("offerTypes", new String[]{"Childcare", "ElderlyCare", "Tutoring", "Household", "Transportation", "Emergency", "Other"});
+            return "create-offer";
+        }
+    }
+    
+    // Show all offers for current user
+    @GetMapping("/offer/my-offers")
+    public String showMyOffers(Model model) {
+        // Get current user's offers (you need to implement getting current user ID)
+        String currentUserId = "currentUserId";  // Get from session
+        model.addAttribute("offers", offerService.getOffersByUser(currentUserId));
+        return "my-offers";
+    }
+    
+    // Show edit offer form
+    @GetMapping("/offer/edit/{offerId}")
+    public String showEditOfferForm(@PathVariable String offerId, Model model) {
+        Offer offer = offerService.getOfferById(offerId);
+        model.addAttribute("offer", offer);
+        model.addAttribute("offerTypes", new String[]{"Childcare", "ElderlyCare", "Tutoring", "Household", "Transportation", "Emergency", "Other"});
+        return "edit-offer";
+    }
+    
+    // Handle edit form submission
+    @PostMapping("/offer/edit/{offerId}")
+    public String updateOffer(@PathVariable String offerId, Offer updatedOffer) {
+        offerService.updateOffer(updatedOffer, offerId);
+        return "redirect:/offer/my-offers";
+    }
+
     @GetMapping("/profile")
     public String profile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         User user = userDetails.getUser();
@@ -100,9 +182,11 @@ public class PageController {
         }
         return "request";
     }
-    
+
     @GetMapping("/request")
-    public String viewRequest() { return "request"; }
+    public String viewRequest() {
+        return "request";
+    }
 
     // form to add offer form
 }

@@ -1,13 +1,67 @@
 package com.familyhelpuae.interactionhistory.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import lombok.Data;
+
+@Data
+@Document(collection = "interaction_history")
 public class InteractionHistory {
-    String interactionId; // requestId + | +OfferID
-    String helpingFamilyId; // the family that helped in the interaction
-    String helpedFamilyId; // the family that recieved help in the interaction
-    String interactionType; // e.g., "help_request", "help_provided", "feedback_given"
-    String description; // details about the interaction
-    String status; // e.g., "pending", "completed", "cancelled"
-    double ratingForHelpingFamily; // rating given for the helping family (1-6)
-    double ratingForHelpedFamily; // rating given for the helped family (1-6)
-    String createdAt; // when the interaction occurred
+    
+    @Id
+    private String interactionId;
+    
+    @Field("helpingFamilyId")
+    private String helpingFamilyId;
+    
+    @Field("helpedFamilyId")
+    private String helpedFamilyId;
+    
+    @Field("interactionType")
+    private String interactionType;
+    
+    @Field("description")
+    private String description;
+    
+    @Field("status")
+    private String status;
+    
+    @Field("ratingForHelpingFamily")
+    private double ratingForHelpingFamily;
+    
+    @Field("ratingForHelpedFamily")
+    private double ratingForHelpedFamily;
+    
+    @Field("createdAt")
+    private String createdAt;
+    
+    @Field("updatedAt")
+    private String updatedAt;
+
+    // Getters
+    public String getInteractionId() { return interactionId; }
+    public String getHelpingFamilyId() { return helpingFamilyId; }
+    public String getHelpedFamilyId() { return helpedFamilyId; }
+    public String getInteractionType() { return interactionType; }
+    public String getDescription() { return description; }
+    public String getStatus() { return status; }
+    public double getRatingForHelpingFamily() { return ratingForHelpingFamily; }
+    public double getRatingForHelpedFamily() { return ratingForHelpedFamily; }
+    public String getCreatedAt() { return createdAt; }
+    public String getUpdatedAt() { return updatedAt; }
+
+    // Setters
+    public void setInteractionId(String interactionId) { this.interactionId = interactionId; }
+    public void setHelpingFamilyId(String helpingFamilyId) { this.helpingFamilyId = helpingFamilyId; }
+    public void setHelpedFamilyId(String helpedFamilyId) { this.helpedFamilyId = helpedFamilyId; }
+    public void setInteractionType(String interactionType) { this.interactionType = interactionType; }
+    public void setDescription(String description) { this.description = description; }
+    public void setStatus(String status) { this.status = status; }
+    public void setRatingForHelpingFamily(double ratingForHelpingFamily) { this.ratingForHelpingFamily = ratingForHelpingFamily; }
+    public void setRatingForHelpedFamily(double ratingForHelpedFamily) { this.ratingForHelpedFamily = ratingForHelpedFamily; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
+
 }
