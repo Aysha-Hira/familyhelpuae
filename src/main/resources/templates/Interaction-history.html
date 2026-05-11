@@ -1,262 +1,415 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interaction History – Family Help UAE</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/register.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/register.css" />
     <style>
-        .trust-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            border: 1px solid var(--border);
-        }
-        .trust-score {
-            text-align: center;
-        }
-        .trust-score .score {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--green);
-        }
-        .progress-bar {
-            width: 200px;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--green);
-            border-radius: 4px;
-        }
-        .interaction-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .interaction-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            border-left: 4px solid var(--green);
-        }
-        .interaction-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .interaction-role {
-            font-weight: 600;
-            font-size: 14px;
-            padding: 4px 12px;
-            border-radius: 50px;
-        }
-        .role-helping {
-            background: var(--green-light);
-            color: var(--green);
-        }
-        .role-helped {
-            background: #fff3e0;
-            color: #f39c12;
-        }
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .status-completed { background: var(--green-light); color: var(--green); }
-        .status-pending { background: #fff3e0; color: #f39c12; }
-        .interaction-desc {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 12px;
-        }
-        .interaction-meta {
-            font-size: 12px;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
-        .rating-section {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
-        }
-        .rating-stars {
-            display: flex;
-            gap: 8px;
-            margin: 10px 0;
-        }
-        .star {
-            font-size: 24px;
-            cursor: pointer;
-            color: #ddd;
-        }
-        .star.selected {
-            color: #f39c12;
-        }
-        .btn-rate {
-            background: var(--green);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 20px;
-            color: var(--muted);
-        }
-        .nav-links {
-            text-align: center;
-            margin-top: 32px;
-        }
-        .nav-links a {
-            color: var(--green);
-            text-decoration: none;
-            margin: 0 12px;
-            font-size: 14px;
-        }
+      .trust-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        border: 1px solid var(--border);
+      }
+      .trust-score {
+        text-align: center;
+      }
+      .trust-score .score {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--green);
+      }
+      .progress-bar {
+        width: 200px;
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--green);
+        border-radius: 4px;
+      }
+      .interaction-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .interaction-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        border-left: 4px solid var(--green);
+      }
+      .interaction-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .interaction-role {
+        font-weight: 600;
+        font-size: 14px;
+        padding: 4px 12px;
+        border-radius: 50px;
+      }
+      .role-helping {
+        background: var(--green-light);
+        color: var(--green);
+      }
+      .role-helped {
+        background: #fff3e0;
+        color: #f39c12;
+      }
+      .status-badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .status-completed {
+        background: var(--green-light);
+        color: var(--green);
+      }
+      .status-pending {
+        background: #fff3e0;
+        color: #f39c12;
+      }
+      .interaction-desc {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 12px;
+      }
+      .interaction-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      .rating-section {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+      }
+      .rating-stars {
+        display: flex;
+        gap: 8px;
+        margin: 10px 0;
+      }
+      .star {
+        font-size: 24px;
+        cursor: pointer;
+        color: #ddd;
+      }
+      .star.selected {
+        color: #f39c12;
+      }
+      .btn-rate {
+        background: var(--green);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 60px;
+        background: white;
+        border-radius: 20px;
+        color: var(--muted);
+      }
+      .nav-links {
+        text-align: center;
+        margin-top: 32px;
+      }
+      .nav-links a {
+        color: var(--green);
+        text-decoration: none;
+        margin: 0 12px;
+        font-size: 14px;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: #fff;
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 28px 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+      }
+
+      .sidebar-logo {
+        font-family: 'DM Serif Display', serif;
+        font-size: 18px;
+        color: var(--green);
+        padding: 0 24px 28px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 0 12px;
+        flex: 1;
+        justify-content: flex-start;
+        align-items: stretch;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 16px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+        transition: all 0.15s;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: var(--green-light);
+        color: var(--green);
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        font-size: 16px;
+      }
+
+      .sidebar-footer {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="logo">Family Help UAE</div>
 
-<div class="logo">Family Help UAE</div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">Family Help UAE</div>
+      <nav class="sidebar-nav">
+        <a href="/home" class="nav-item active">
+          <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="/profile" class="nav-item">
+          <span class="nav-icon">👤</span> My Profile
+        </a>
+        <a href="/family" class="nav-item">
+          <span class="nav-icon">👨‍👩‍👧‍👦</span> My Family
+        </a>
+        <a href="/request/new" class="nav-item">
+          <span class="nav-icon">🙋</span> Post Request
+        </a>
+        <a href="/offer/my-offers" class="nav-item">
+          <span class="nav-icon">🤝</span> Post Offer
+        </a>
+        <a href="/interactions" class="nav-item">
+          <span class="nav-icon">📋</span> Interactions
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/logout" class="nav-item logout">
+          <span class="nav-icon">🚪</span> Sign Out
+        </a>
+      </div>
+    </aside>
 
-<div class="card" style="max-width: 900px;">
-    <div class="form-body">
+    
+    <div class="card" style="max-width: 900px">
+      <div class="form-body">
         <h2>Interaction History</h2>
         <p class="subtitle">Track your help exchanges and reputation</p>
 
         <!-- Trust Score Card -->
         <div class="trust-card">
-            <div>
-                <div class="trust-score">
-                    <div class="score" th:text="${trustScore}">0.0</div>
-                    <div class="label">Family Trust Score</div>
-                </div>
+          <div>
+            <div class="trust-score">
+              <div class="score" th:text="${trustScore}">0.0</div>
+              <div class="label">Family Trust Score</div>
             </div>
-            <div style="flex: 1; max-width: 260px;">
-                <div class="progress-bar">
-                    <div class="progress-fill" th:style="'width: ' + (${trustScore} * 10) + '%'"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 8px;">
-                    <span style="font-size: 11px;">0</span>
-                    <span style="font-size: 11px;">5</span>
-                    <span style="font-size: 11px;">10</span>
-                </div>
+          </div>
+          <div style="flex: 1; max-width: 260px">
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                th:style="'width: ' + ((${trustScore} ?: 0) * 10) + '%'"
+              ></div>
             </div>
-            <div>
-                <span style="font-size: 13px; color: var(--muted);">
-                    📊 <span th:text="${totalInteractions}">0</span> completed interactions
-                </span>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-top: 8px;
+              "
+            >
+              <span style="font-size: 11px">0</span>
+              <span style="font-size: 11px">5</span>
+              <span style="font-size: 11px">10</span>
             </div>
+          </div>
+          <div>
+            <span style="font-size: 13px; color: var(--muted)">
+              📊 <span th:text="${totalInteractions}">0</span> completed
+              interactions
+            </span>
+          </div>
         </div>
 
         <!-- Interactions List -->
         <div class="interaction-list">
-            <div th:if="${interactions.empty}" class="empty-state">
-                <p>No interactions yet.</p>
-                <p style="font-size: 13px; margin-top: 8px;">Complete help exchanges to see them here.</p>
+          <div th:if="${interactions.empty}" class="empty-state">
+            <p>No interactions yet.</p>
+            <p style="font-size: 13px; margin-top: 8px">
+              Complete help exchanges to see them here.
+            </p>
+          </div>
+
+          <div th:each="interaction : ${interactions}" class="interaction-card">
+            <div class="interaction-header">
+              <span
+                class="interaction-role"
+                th:classappend="${interaction.helpingFamilyId == currentFamilyId ? 'role-helping' : 'role-helped'}"
+                th:text="${interaction.helpingFamilyId == currentFamilyId ? 'You Helped →' : '← Helped You'}"
+              >
+              </span>
+              <span
+                class="status-badge"
+                th:classappend="'status-' + ${interaction.status.toLowerCase()}"
+                th:text="${interaction.status}"
+              >
+              </span>
             </div>
 
-            <div th:each="interaction : ${interactions}" class="interaction-card">
-                <div class="interaction-header">
-                    <span class="interaction-role" 
-                          th:classappend="${interaction.helpingFamilyId == currentFamilyId ? 'role-helping' : 'role-helped'}"
-                          th:text="${interaction.helpingFamilyId == currentFamilyId ? 'You Helped →' : '← Helped You'}">
-                    </span>
-                    <span class="status-badge" 
-                          th:classappend="'status-' + ${interaction.status.toLowerCase()}"
-                          th:text="${interaction.status}">
-                    </span>
-                </div>
-                
-                <div class="interaction-desc" th:text="${interaction.description}"></div>
-                <div class="interaction-meta">
-                    📅 <span th:text="${interaction.createdAt}"></span>
-                </div>
-
-                <!-- Show existing rating -->
-                <div th:if="${interaction.status == 'completed'}" class="rating-section">
-                    <span th:if="${interaction.ratingForHelpingFamily > 0 and interaction.helpingFamilyId == currentFamilyId}">
-                        ⭐ Rating you received: <strong th:text="${interaction.ratingForHelpingFamily}"></strong>/6
-                    </span>
-                    <span th:if="${interaction.ratingForHelpedFamily > 0 and interaction.helpedFamilyId == currentFamilyId}">
-                        ⭐ Rating you received: <strong th:text="${interaction.ratingForHelpedFamily}"></strong>/6
-                    </span>
-                </div>
-
-                <!-- Rating form for pending interactions -->
-                <div th:if="${interaction.status == 'pending'}" class="rating-section">
-                    <form method="post" th:action="@{/interaction/rate}">
-                        <input type="hidden" name="interactionId" th:value="${interaction.interactionId}"/>
-                        <input type="hidden" name="role" 
-                               th:value="${interaction.helpingFamilyId == currentFamilyId ? 'helping' : 'helped'}"/>
-                        
-                        <div style="margin-bottom: 10px;">
-                            <span style="font-size: 13px; font-weight: 500;">Rate this interaction (1-6):</span>
-                            <div class="rating-stars" th:id="'stars-' + ${interaction.interactionId}">
-                                <span class="star" data-value="1">☆</span>
-                                <span class="star" data-value="2">☆</span>
-                                <span class="star" data-value="3">☆</span>
-                                <span class="star" data-value="4">☆</span>
-                                <span class="star" data-value="5">☆</span>
-                                <span class="star" data-value="6">☆</span>
-                            </div>
-                            <input type="hidden" name="rating" th:id="'rating-' + ${interaction.interactionId}" required/>
-                        </div>
-                        
-                        <button type="submit" class="btn-rate">Submit Feedback</button>
-                    </form>
-                </div>
+            <div
+              class="interaction-desc"
+              th:text="${interaction.description}"
+            ></div>
+            <div class="interaction-meta">
+              📅 <span th:text="${interaction.createdAt}"></span>
             </div>
+
+            <!-- Show existing rating -->
+            <div
+              th:if="${interaction.status == 'completed'}"
+              class="rating-section"
+            >
+              <span
+                th:if="${interaction.ratingForHelpingFamily > 0 and interaction.helpingFamilyId == currentFamilyId}"
+              >
+                ⭐ Rating you received:
+                <strong th:text="${interaction.ratingForHelpingFamily}"></strong
+                >/6
+              </span>
+              <span
+                th:if="${interaction.ratingForHelpedFamily > 0 and interaction.helpedFamilyId == currentFamilyId}"
+              >
+                ⭐ Rating you received:
+                <strong th:text="${interaction.ratingForHelpedFamily}"></strong
+                >/6
+              </span>
+            </div>
+
+            <!-- Rating form for pending interactions -->
+            <div
+              th:if="${interaction.status == 'pending'}"
+              class="rating-section"
+            >
+              <form method="post" th:action="@{/interaction/rate}">
+                <input
+                  type="hidden"
+                  name="interactionId"
+                  th:value="${interaction.interactionId}"
+                />
+                <input
+                  type="hidden"
+                  name="role"
+                  th:value="${interaction.helpingFamilyId == currentFamilyId ? 'helping' : 'helped'}"
+                />
+
+                <div style="margin-bottom: 10px">
+                  <span style="font-size: 13px; font-weight: 500"
+                    >Rate this interaction (1-6):</span
+                  >
+                  <div
+                    class="rating-stars"
+                    th:id="'stars-' + ${interaction.interactionId}"
+                  >
+                    <span class="star" data-value="1">☆</span>
+                    <span class="star" data-value="2">☆</span>
+                    <span class="star" data-value="3">☆</span>
+                    <span class="star" data-value="4">☆</span>
+                    <span class="star" data-value="5">☆</span>
+                    <span class="star" data-value="6">☆</span>
+                  </div>
+                  <input
+                    type="hidden"
+                    name="rating"
+                    th:id="'rating-' + ${interaction.interactionId}"
+                    required
+                  />
+                </div>
+
+                <button type="submit" class="btn-rate">Submit Feedback</button>
+              </form>
+            </div>
+          </div>
         </div>
 
         <div class="nav-links">
-            <a th:href="@{/home}">← Back to Home</a>
-            <a th:href="@{/offer/my-offers}">My Offers</a>
+          <a th:href="@{/home}">← Back to Home</a>
+          <a th:href="@{/offer/my-offers}">My Offers</a>
         </div>
+      </div>
     </div>
-</div>
 
-<!-- Add before the existing script in Interaction-history.html -->
-<script th:inline="javascript">
-    const familyId = /*[[${familyId}]]*/ null;
-</script>
-<script>
-    async function loadInteractions() {
+    <!-- Add before the existing script in Interaction-history.html -->
+    <script th:inline="javascript">
+      const familyId = /*[[${familyId}]]*/ null;
+    </script>
+    <script>
+      async function loadInteractions() {
         if (!familyId) return;
         const res = await fetch(`/api/interaction/family/${familyId}`);
         const data = await res.json();
         renderInteractions(data);
-    }
+      }
 
-    function renderInteractions(interactions) {
+      function renderInteractions(interactions) {
         const container = document.getElementById('interactionsList');
         if (!interactions || !interactions.length) {
-            container.innerHTML = '<div class="empty">No interactions yet.</div>';
-            return;
+          container.innerHTML = '<div class="empty">No interactions yet.</div>';
+          return;
         }
-        container.innerHTML = interactions.map(i => `
+        container.innerHTML = interactions
+          .map(
+            (i) => `
             <div class="interaction-card">
                 <div class="int-header">
                     <span class="int-type">${i.interactionType || 'Help'}</span>
@@ -264,62 +417,75 @@
                 </div>
                 <p class="int-desc">${i.description || ''}</p>
                 <div class="int-meta">
-                    ${i.helpingFamilyId === familyId
+                    ${
+                      i.helpingFamilyId === familyId
                         ? '🤝 You helped another family'
-                        : '🙏 You received help'}
+                        : '🙏 You received help'
+                    }
                 </div>
-                ${i.status === 'pending' ? `
+                ${
+                  i.status === 'pending'
+                    ? `
                 <div class="int-rating">
                     <label>Rate this interaction (1–6):</label>
                     <input type="number" min="1" max="6" id="rating-${i.interactionId}" />
                     <button onclick="submitRating('${i.interactionId}')">Submit Rating</button>
-                </div>` : `
+                </div>`
+                    : `
                 <div class="int-ratings">
                     ⭐ Helping: ${i.ratingForHelpingFamily} · Helped: ${i.ratingForHelpedFamily}
-                </div>`}
+                </div>`
+                }
             </div>
-        `).join('');
-    }
+        `
+          )
+          .join('');
+      }
 
-    async function submitRating(interactionId) {
+      async function submitRating(interactionId) {
         const rating = document.getElementById(`rating-${interactionId}`).value;
         // role = 'helping' if we are the helping family, 'helped' if we received help
-        const interaction = await (await fetch(`/api/interaction/${interactionId}`)).json();
-        const role = interaction.helpingFamilyId === familyId ? 'helped' : 'helping';
-        await fetch(`/api/interaction/${interactionId}/rate?role=${role}&rating=${rating}`, {
-            method: 'PUT'
-        });
+        const interaction = await (
+          await fetch(`/api/interaction/${interactionId}`)
+        ).json();
+        const role =
+          interaction.helpingFamilyId === familyId ? 'helped' : 'helping';
+        await fetch(
+          `/api/interaction/${interactionId}/rate?role=${role}&rating=${rating}`,
+          {
+            method: 'PUT',
+          }
+        );
         loadInteractions();
-    }
+      }
 
-    loadInteractions();
-</script>
+      loadInteractions();
+    </script>
 
-<script>
-    document.querySelectorAll('.rating-stars').forEach(starContainer => {
+    <script>
+      document.querySelectorAll('.rating-stars').forEach((starContainer) => {
         const stars = starContainer.querySelectorAll('.star');
         const containerId = starContainer.id;
         const interactionId = containerId.replace('stars-', '');
         const ratingInput = document.getElementById('rating-' + interactionId);
-        
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const value = parseInt(this.dataset.value);
-                ratingInput.value = value;
-                
-                stars.forEach((s, index) => {
-                    if (index < value) {
-                        s.innerHTML = '★';
-                        s.classList.add('selected');
-                    } else {
-                        s.innerHTML = '☆';
-                        s.classList.remove('selected');
-                    }
-                });
-            });
-        });
-    });
-</script>
 
-</body>
+        stars.forEach((star) => {
+          star.addEventListener('click', function () {
+            const value = parseInt(this.dataset.value);
+            ratingInput.value = value;
+
+            stars.forEach((s, index) => {
+              if (index < value) {
+                s.innerHTML = '★';
+                s.classList.add('selected');
+              } else {
+                s.innerHTML = '☆';
+                s.classList.remove('selected');
+              }
+            });
+          });
+        });
+      });
+    </script>
+  </body>
 </html>

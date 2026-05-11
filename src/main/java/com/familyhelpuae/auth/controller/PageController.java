@@ -1,4 +1,4 @@
-package com.familyhelpuae.viewController;
+package com.familyhelpuae.auth.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,19 +16,21 @@ import com.familyhelpuae.offer.service.offerService;
 import com.familyhelpuae.security.CustomUserDetails;
 import com.familyhelpuae.user.model.User;
 import com.familyhelpuae.user.service.UserProfileService;
+import com.familyhelpuae.family.service.FamilyService;
 
 @Controller
 public class PageController {
     private final UserProfileService userProfileService;
-
+    private final FamilyService familyService;
     private final offerService offerService;
     private final interactionHistoryService interactionHistoryService;
 
     public PageController(offerService offerService, UserProfileService userProfileService,
-            interactionHistoryService interactionHistoryService) {
+            interactionHistoryService interactionHistoryService, FamilyService familyService) {
         this.offerService = offerService;
         this.userProfileService = userProfileService;
         this.interactionHistoryService = interactionHistoryService;
+        this.familyService = familyService;
     }
 
     @GetMapping("/home")
@@ -183,9 +185,27 @@ public class PageController {
     @GetMapping("/interactions")
     public String interactionsPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         User user = userDetails.getUser();
+
+        String familyId = null;
         if (user.getFamilies() != null && !user.getFamilies().isEmpty()) {
-            model.addAttribute("familyId", user.getFamilies().get(0).getFamilyId());
+            familyId = user.getFamilies().get(0).getFamilyId();
         }
+
+        model.addAttribute("familyId", familyId);
+
+        if (familyId != null) {
+            var interactions = interactionHistoryService.getInteractionsByFamily(familyId);
+            model.addAttribute("interactions", interactions != null ? interactions : new java.util.ArrayList<>());
+            model.addAttribute("totalInteractions", interactions != null ? interactions.size() : 0);
+            model.addAttribute("currentFamilyId", familyId);
+        } else {
+            model.addAttribute("interactions", new java.util.ArrayList<>());
+            model.addAttribute("totalInteractions", 0);
+            model.addAttribute("currentFamilyId", null);
+        }
+
+        model.addAttribute("trustScore", familyId != null ? familyService.getTrustScore(familyId) : 0.0);
+
         return "Interaction-history";
     }
 
