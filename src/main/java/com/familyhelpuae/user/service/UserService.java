@@ -16,4 +16,6 @@ public interface UserService {
     void delete(String id);
 
     boolean authenticate(String email, String password);
+
+    void updateTrustScore(String userId, double rating);
 }

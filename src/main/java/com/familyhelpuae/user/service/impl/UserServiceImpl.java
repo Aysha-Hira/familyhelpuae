@@ -116,4 +116,27 @@ public class UserServiceImpl implements UserService {
                 .map(user -> passwordEncoder.matches(password, user.getPassword()))
                 .orElse(false);
     }
+
+    @Override
+    public void updateTrustScore(String userId, double rating) {
+        User user = getUserById(userId);
+
+        // Update trust score
+        double change = (rating - 3.5) * 2;
+        double newScore = Math.max(0, Math.min(6, user.getTrustScore() + change));
+        user.setTrustScore(newScore);
+
+        // Track consecutive bad ratings (rating 1 or 2 is considered bad)
+        if (rating < 3) {
+            user.setConsecutiveBadRatings(user.getConsecutiveBadRatings() + 1);
+        } else {
+            user.setConsecutiveBadRatings(0);
+        }
+
+        // Increment total interactions
+        user.setTotalInteractions(user.getTotalInteractions() + 1);
+
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
 }

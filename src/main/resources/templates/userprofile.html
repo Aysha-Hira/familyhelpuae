@@ -375,7 +375,7 @@
               <div class="trust-bar-bg">
                 <div
                   class="trust-bar-fill"
-                  th:style="'width:' + ${user.trustScore} + '%'"
+                  th:style="'width:' + ${user.trustScore / 6.0 * 100} + '%'"
                 ></div>
               </div>
               <span class="trust-number" th:text="${user.trustScore}">0</span>
