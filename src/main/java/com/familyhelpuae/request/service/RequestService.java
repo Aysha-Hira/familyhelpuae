@@ -32,10 +32,6 @@ public interface RequestService {
     
     List<RequestResponseDTO> getRequestsByTypeEnriched(String type);
     List<RequestResponseDTO> getRequestsByTitleEnriched(String title);
-    
-    // TODO: when interaction history implemented - on completion call InteractionHistoryService.save()
-    // TODO: when trust score implemented - on completion call FamilyService.setTrustScore()
-    
-    
+   
 
 }

@@ -14,4 +14,13 @@ public class FamilyMember {
 
 	@Field(name = "isUser")
 	Boolean isUser; // searchable/interactable if true
+	
+	@Field(name = "memberTrustScore")
+	double memberTrustScore; // individual trust score for this member, updated after each interaction
+
+	@Field(name = "completedInteractions")
+	int completedInteractions; // how many interactions this member has completed
+
+	@Field(name = "totalRating")
+	double totalRating; // sum of all ratings received, used to calculate average
 }

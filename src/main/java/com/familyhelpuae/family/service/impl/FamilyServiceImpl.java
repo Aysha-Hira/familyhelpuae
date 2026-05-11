@@ -8,17 +8,38 @@ import org.springframework.stereotype.Service;
 
 import com.familyhelpuae.exception.ResourceNotFound;
 import com.familyhelpuae.family.model.Family;
+import com.familyhelpuae.family.model.FamilyFeedback;
 import com.familyhelpuae.family.model.FamilyMember;
 import com.familyhelpuae.family.repository.FamilyRepository;
 import com.familyhelpuae.family.service.FamilyService;
+import com.familyhelpuae.user.service.UserFamilyService;
+import com.familyhelpuae.request.model.Request;
+import com.familyhelpuae.request.repository.RequestRepository;
+import com.familyhelpuae.offer.model.Offer;
+import com.familyhelpuae.offer.repository.offerRepository;
+import com.familyhelpuae.interactionhistory.model.InteractionHistory;
+import com.familyhelpuae.interactionhistory.repository.InteractionHistoryRepository;
+import java.util.stream.Stream;
 
 @Service
 public class FamilyServiceImpl implements FamilyService {
 	
 	private final FamilyRepository familyRepo;
-	
-	public FamilyServiceImpl(FamilyRepository familyRepo) {
-		this.familyRepo = familyRepo;
+	private final UserFamilyService userFamilyService;
+	private final RequestRepository requestRepo;
+	private final offerRepository offerRepository;
+	private final InteractionHistoryRepository interactionHistoryRepo;
+
+	public FamilyServiceImpl(FamilyRepository familyRepo,
+	                          UserFamilyService userFamilyService,
+	                          RequestRepository requestRepo,
+	                          offerRepository offerRepository,
+	                          InteractionHistoryRepository interactionHistoryRepo) {
+	    this.familyRepo = familyRepo;
+	    this.userFamilyService = userFamilyService;
+	    this.requestRepo = requestRepo;
+	    this.offerRepository = offerRepository;
+	    this.interactionHistoryRepo = interactionHistoryRepo;
 	}
 
 	@Override
@@ -60,14 +81,21 @@ public class FamilyServiceImpl implements FamilyService {
 		return familyRepo.save(existing);
 	}
 
-	// TODO: when offers/requests are implemented - should also delete or archive all offers/requests belonging to this family
 	@Override
 	public void deleteFamily(String familyId) {
-		if (!familyRepo.existsById(familyId)) {
-            throw new ResourceNotFound("Family", "familyId", familyId);
-        }
-		familyRepo.deleteById(familyId);
-		
+	    if (!familyRepo.existsById(familyId)) {
+	        throw new ResourceNotFound("Family", "familyId", familyId);
+	    }
+
+	    // Delete all requests belonging to this family
+	    List<Request> familyRequests = requestRepo.findByRequestingFamilyId(familyId);
+	    requestRepo.deleteAll(familyRequests);
+
+	    // Delete all offers belonging to this family
+	    List<Offer> familyOffers = offerRepository.findByOfferingFamilyId(familyId);
+	    offerRepository.deleteAll(familyOffers);
+
+	    familyRepo.deleteById(familyId);
 	}
 
 
@@ -76,10 +104,6 @@ public class FamilyServiceImpl implements FamilyService {
 		return familyRepo.findByFamilyName(familyName);
 	}
 	
-	// TODO: Add authorization check - only family admin should be able to add members
-	// TODO: Implement join request flow (user sends request, admin approves)
-	// TODO: when partner completes UserFamilyService - also call userFamilyService.addFamily(member.getFamilyMemberId(), familyId, role)
-	// TODO: check if member already exists in family before adding (prevent duplicates)
 	@Override
 	public Family addMember(String familyId, FamilyMember member) {
 	    Family f = getFamilyById(familyId);
@@ -92,21 +116,36 @@ public class FamilyServiceImpl implements FamilyService {
 	        throw new IllegalArgumentException("Member already exists in this family");
 	    }
 
+	    // Add member to family
 	    members.add(member);
 	    f.setMembers(members);
-	    return updateFamily(f, familyId);
+	    Family updated = updateFamily(f, familyId);
+
+	    // Sync with user side — add this family to the user's family list
+	    String role = Boolean.TRUE.equals(member.getIsAdmin()) ? "admin" : "member";
+	    try {
+	        userFamilyService.addFamily(member.getFamilyMemberId(), familyId, role);
+	    } catch (IllegalArgumentException e) {
+	        // User already has this family on their side — that's fine, continue
+	    }
+
+	    return updated;
 	}
 	
-	// TODO: when partner completes UserFamilyService - also call userFamilyService.removeFamily(member.getFamilyMemberId(), familyId)
 	@Override
 	public Family removeMember(String familyId, FamilyMember member) {
-		Family f = getFamilyById(familyId);
-		List<FamilyMember> m = f.getMembers();
-		m.remove(member);
-		
-		f.setMembers(m);
-		
-		return updateFamily(f, familyId);
+	    Family f = getFamilyById(familyId);
+	    List<FamilyMember> members = f.getMembers();
+	    members.remove(member);
+	    f.setMembers(members);
+	    Family updated = updateFamily(f, familyId);
+
+	    try {
+	        userFamilyService.removeFamily(member.getFamilyMemberId(), familyId);
+	    } catch (IllegalArgumentException e) {
+	    }
+
+	    return updated;
 	}
 	
 	@Override
@@ -142,7 +181,7 @@ public class FamilyServiceImpl implements FamilyService {
 		return getFamilyById(familyId).getFamilyTrustScore();
 	}
 	
-	// TODO: called by feedback/interaction service once implemented - do not expose as endpoint
+	
 	@Override
 	public void setTrustScore(String familyId, double score) {
 		Family f = getFamilyById(familyId);
@@ -151,23 +190,54 @@ public class FamilyServiceImpl implements FamilyService {
 		updateFamily(f, familyId);
 	}
 	
+	@Override
 	public void calculateTrustScore(String familyId) {
 	    Family f = getFamilyById(familyId);
 	    List<FamilyMember> members = f.getMembers();
-	    
-	    // Basic formula: base score + bonus for member count + bonus for active members
+
+	    // Base score + member bonuses
 	    double base = 1.0;
 	    double memberBonus = Math.min(members.size() * 0.2, 1.0);
 	    double activeBonus = members.stream().filter(FamilyMember::getIsUser).count() * 0.1;
-	    
-	    // TODO: add completedInteractions * 0.5 and avgRating * 0.3 once interaction history is done
-	    double score = Math.min(base + memberBonus + activeBonus, 5.0);
-	    
+
+	    List<InteractionHistory> asHelper = interactionHistoryRepo.findByHelpingFamilyId(familyId);
+	    List<InteractionHistory> asHelped = interactionHistoryRepo.findByHelpedFamilyId(familyId);
+
+	    long completedCount = Stream.concat(asHelper.stream(), asHelped.stream())
+	        .filter(i -> "completed".equalsIgnoreCase(i.getStatus()))
+	        .count();
+
+	    double interactionBonus = Math.min(completedCount * 0.5, 2.0);
+
+	    double avgRating = f.getFeedbacks() == null || f.getFeedbacks().isEmpty() ? 0.0 :
+	        f.getFeedbacks().stream()
+	            .mapToDouble(FamilyFeedback::getRating)
+	            .average()
+	            .orElse(0.0);
+
+	    double ratingBonus = (avgRating / 6.0) * 0.3;
+
+	    double score = Math.min(base + memberBonus + activeBonus + interactionBonus + ratingBonus, 5.0);
+
 	    f.setFamilyTrustScore(score);
 	    familyRepo.save(f);
 	}
 
-	
+	@Override
+	public Family addFeedback(String familyId, FamilyFeedback feedback) {
+	    Family f = getFamilyById(familyId);
+	    if (f.getFeedbacks() == null) f.setFeedbacks(new ArrayList<>());
+	    feedback.setCreatedAt(LocalDateTime.now().toString());
+	    f.getFeedbacks().add(feedback);
+	    Family updated = familyRepo.save(f);
+	    calculateTrustScore(familyId);
+	    return updated;
+	}
+
+	@Override
+	public List<FamilyFeedback> getFeedback(String familyId) {
+	    return getFamilyById(familyId).getFeedbacks();
+	}
 	
 
 }

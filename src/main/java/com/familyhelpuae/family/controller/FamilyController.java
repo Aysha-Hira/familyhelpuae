@@ -2,13 +2,17 @@ package com.familyhelpuae.family.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.familyhelpuae.exception.DuplicateFamilyIDException;
 import com.familyhelpuae.family.model.Family;
+import com.familyhelpuae.family.model.FamilyFeedback;
 import com.familyhelpuae.family.model.FamilyMember;
 import com.familyhelpuae.family.service.FamilyService;
+import com.familyhelpuae.security.CustomUserDetails;
 
 @RestController
 @RequestMapping("/family")
@@ -51,8 +55,21 @@ public class FamilyController {
 	}
 	
     @PostMapping("/{familyId}/members")
-    public ResponseEntity<Family> addMember(@PathVariable String familyId, @RequestBody FamilyMember member) {
-        return ResponseEntity.ok(familyService.addMember(familyId, member));
+    public ResponseEntity<?> addMember(@PathVariable String familyId,
+            @RequestBody FamilyMember member,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+		String currentUserId = userDetails.getUser().getUserID();
+		
+		List<FamilyMember> admins = familyService.getFamilyAdmins(familyId);
+		boolean isAdmin = admins.stream()
+		.anyMatch(a -> a.getFamilyMemberId().equals(currentUserId));
+		
+		if (!isAdmin) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+		.body("Only a family admin can add members");
+		}
+		
+		return ResponseEntity.ok(familyService.addMember(familyId, member));
     }
 
     @DeleteMapping("/{familyId}/members")
@@ -74,4 +91,15 @@ public class FamilyController {
 	public ResponseEntity<List<FamilyMember>> getActiveMembers(@PathVariable String familyId){
 		return ResponseEntity.ok(familyService.getActiveMembers(familyId));
 	}
+    
+    @PostMapping("/{familyId}/feedback")
+    public ResponseEntity<Family> addFeedback(@PathVariable String familyId,
+                                               @RequestBody FamilyFeedback feedback) {
+        return ResponseEntity.ok(familyService.addFeedback(familyId, feedback));
+    }
+
+    @GetMapping("/{familyId}/feedback")
+    public ResponseEntity<List<FamilyFeedback>> getFeedback(@PathVariable String familyId) {
+        return ResponseEntity.ok(familyService.getFeedback(familyId));
+    }
 }

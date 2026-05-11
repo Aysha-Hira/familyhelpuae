@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.familyhelpuae.DTO.RequestResponseDTO;
 import com.familyhelpuae.request.model.Request;
 import com.familyhelpuae.request.service.RequestService;
+import com.familyhelpuae.security.CustomUserDetails;
+import com.familyhelpuae.user.service.UserFamilyService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,14 +23,31 @@ import jakarta.validation.Valid;
 public class RequestController {
 
     private final RequestService requestService;
+    private final UserFamilyService userFamilyService;
 
-    public RequestController(RequestService requestService) {
+    public RequestController(RequestService requestService, UserFamilyService userFamilyService) {
         this.requestService = requestService;
+        this.userFamilyService = userFamilyService;
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Request> createRequest(@Valid @RequestBody Request request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(requestService.createRequest(request));
+    public ResponseEntity<?> createRequest(@RequestBody Request request, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        String currentUserId = userDetails.getUser().getUserID();
+
+        // Validate that the requesting family actually belongs to the logged-in user
+        if (request.getRequestingFamilyId() != null) {
+            boolean belongsToUser = userFamilyService.isRelatedToFamily(
+                currentUserId, request.getRequestingFamilyId());
+            if (!belongsToUser) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You do not belong to this family");
+            }
+        }
+
+        request.setRequestingUserId(currentUserId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(requestService.createRequest(request));
     }
     
     @GetMapping("/{requestId}")

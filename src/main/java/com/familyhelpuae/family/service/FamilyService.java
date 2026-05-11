@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.familyhelpuae.exception.DuplicateFamilyIDException;
 import com.familyhelpuae.family.model.Family;
+import com.familyhelpuae.family.model.FamilyFeedback;
 import com.familyhelpuae.family.model.FamilyMember;
 
 public interface FamilyService {
@@ -23,10 +24,13 @@ public interface FamilyService {
 	Family addMember(String familyId, FamilyMember member);
 	Family removeMember(String familyId, FamilyMember FamilyMember);
 	List<FamilyMember> getActiveMembers(String familyId);
-	//FamilyMember getFamilyMemberById(String familyMember);
 	
 	double getTrustScore(String familyId);
 	void setTrustScore(String familyId, double score);
 	void calculateTrustScore(String familyId);
+	
+	Family addFeedback(String familyId, FamilyFeedback feedback);
+
+	List<FamilyFeedback> getFeedback(String familyId);
 	
 }

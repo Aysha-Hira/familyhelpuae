@@ -44,5 +44,6 @@ public class Family {
     @Field(name = "updatedAt")
     LocalDateTime updatedAt;
     
-    //TODO: Add feedback and ratings stuff
+    @Field(name = "feedbacks")
+    List<FamilyFeedback> feedbacks; // list of feedback entries left by other families
 }

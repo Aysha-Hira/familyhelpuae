@@ -38,7 +38,6 @@ public class RequestServiceImpl implements RequestService {
 
 	@Override
 	public Request createRequest(Request request) {
-		// TODO: when auth is integrated - validate that requestingFamilyId belongs to the logged-in user
 		request.setRequestId(null);
 		request.setRequestStatus("open");
 		LocalDateTime now = LocalDateTime.now();
@@ -87,27 +86,32 @@ public class RequestServiceImpl implements RequestService {
 	    existing.setUpdatedAt(LocalDateTime.now());
 
 	    if ("completed".equalsIgnoreCase(status)) {
+	        // Record the interaction
 	        String helpingFamilyId = (existing.getLinkedOfferIds() != null
 	                && !existing.getLinkedOfferIds().isEmpty())
-	                ? existing.getLinkedOfferIds().get(0) // this is offerId, not familyId
-	                : null;
+	                ? existing.getLinkedOfferIds().get(0)
+	                : "unknown";
 
 	        interactionHistoryService.recordInteraction(
-	        	    helpingFamilyId != null ? helpingFamilyId : "unknown",
-	        	    existing.getRequestingFamilyId(),
-	        	    existing.getRequestType(),
-	        	    "Completed request: " + existing.getRequestTitle(),
-	        	    existing.getRequestId(),
-	        	    existing.getLinkedOfferIds() != null && !existing.getLinkedOfferIds().isEmpty()
-	        	        ? existing.getLinkedOfferIds().get(0) : null
-	        	);
+	            helpingFamilyId,
+	            existing.getRequestingFamilyId(),
+	            existing.getRequestType(),
+	            "Completed request: " + existing.getRequestTitle(),
+	            existing.getRequestId(),
+	            existing.getLinkedOfferIds() != null && !existing.getLinkedOfferIds().isEmpty()
+	                ? existing.getLinkedOfferIds().get(0) : null
+	        );
 
-	        // Recalculate trust score for the requesting family
+	        // Recalculate trust score for both families
 	        familyService.calculateTrustScore(existing.getRequestingFamilyId());
+	        if (!"unknown".equals(helpingFamilyId)) {
+	            familyService.calculateTrustScore(helpingFamilyId);
+	        }
 	    }
 
 	    return requestRepo.save(existing);
 	}
+	
 	@Override
 	public List<Request> getRequestsByFamily(String familyId) {
 		return requestRepo.findByRequestingFamilyId(familyId);

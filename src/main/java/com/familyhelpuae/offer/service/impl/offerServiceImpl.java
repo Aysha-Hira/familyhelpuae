@@ -10,6 +10,7 @@ import com.familyhelpuae.exception.ResourceNotFound;
 import com.familyhelpuae.offer.model.Offer;
 import com.familyhelpuae.offer.repository.offerRepository;
 import com.familyhelpuae.offer.service.offerService;
+import com.familyhelpuae.request.model.Request;
 import com.familyhelpuae.request.service.RequestService;
 import com.mongodb.lang.NonNull;
 
@@ -119,7 +120,9 @@ public class offerServiceImpl implements offerService {
 
 	@Override
 	public Offer unlinkRequest(String offerId, String requestId) {
-		// TODO Auto-generated method stub
-		return null;
+		Offer offer = getOfferById(offerId);
+		requestService.unlinkOffer(requestId, offerId);
+		offer.setUpdatedAt(LocalDateTime.now().format(formatter));
+        return offerRepository.save(offer);
 	}
 }
