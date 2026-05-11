@@ -99,6 +99,11 @@ public class PageController {
     public String createOffer(Offer offer,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             Model model) {
+
+        if (userDetails == null) {
+            return "redirect:/register";
+        }
+
         try {
             User user = userDetails.getUser();
             offer.setOfferingUserId(user.getUserID());
@@ -118,6 +123,11 @@ public class PageController {
     @GetMapping("/offer/my-offers")
     public String showMyOffers(@AuthenticationPrincipal CustomUserDetails userDetails,
             Model model) {
+
+        if (userDetails == null) {
+            return "redirect:/register";
+        }
+
         String currentUserId = userDetails.getUser().getUserID();
         model.addAttribute("offers", offerService.getOffersByUser(currentUserId));
         return "my-offers";

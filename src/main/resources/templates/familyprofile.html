@@ -31,9 +31,13 @@
         <a href="/offer/my-offers" class="nav-item"
           ><span class="nav-icon">🤝</span> Post Offer</a
         >
-		<a href="/interactions" class="nav-item">
-		    <span class="nav-icon">📋</span> Interactions
-		</a>
+        <a href="/interactions" class="nav-item">
+          <span class="nav-icon">📋</span> Interactions
+        </a>
+
+        <a href="/leaderboard" class="nav-item">
+          <span class="nav-icon">🌟</span> Learderboard
+        </a>
       </nav>
       <div class="sidebar-footer">
         <a href="/logout" class="nav-item logout"
@@ -139,10 +143,10 @@
         </div>
       </div>
     </main>
-	
-	<script th:inline="javascript">
-	    const familyId = /*[[${familyId}]]*/ null;
-	</script>
+
+    <script th:inline="javascript">
+      const familyId = /*[[${familyId}]]*/ null;
+    </script>
     <script>
       let familyData = null;
 

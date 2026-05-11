@@ -31,9 +31,12 @@
         <a href="/offer/my-offers" class="nav-item"
           ><span class="nav-icon">🤝</span> Post Offer</a
         >
-		<a href="/interactions" class="nav-item">
-		    <span class="nav-icon">📋</span> Interactions
-		</a>
+        <a href="/interactions" class="nav-item">
+          <span class="nav-icon">📋</span> Interactions
+        </a>
+        <a href="/leaderboard" class="nav-item">
+          <span class="nav-icon">🌟</span> Learderboard
+        </a>
       </nav>
       <div class="sidebar-footer">
         <a href="/logout" class="nav-item logout"
@@ -153,10 +156,10 @@
         </div>
       </div>
     </main>
-	<script th:inline="javascript">
-	    const serverFamilyId = /*[[${familyId}]]*/ null;
-	    const serverUserId = /*[[${userId}]]*/ null;
-	</script>
+    <script th:inline="javascript">
+      const serverFamilyId = /*[[${familyId}]]*/ null;
+      const serverUserId = /*[[${userId}]]*/ null;
+    </script>
     <script>
       const params = new URLSearchParams(window.location.search);
       const requestId = params.get('id');
@@ -169,31 +172,38 @@
         loadUserContext();
       }
 
-	  async function loadRequest(id) {
-	      try {
-	          const res = await fetch(`/request/enriched/${id}`); // was /request/${id}
-	          const r = await res.json();
-	          renderDetail(r);
-	      } catch (e) {
-	          document.getElementById('viewMode').innerHTML =
-	              '<div class="empty">Request not found.</div>';
-	      }
-	  }
+      async function loadRequest(id) {
+        try {
+          const res = await fetch(`/request/enriched/${id}`); // was /request/${id}
+          const r = await res.json();
+          renderDetail(r);
+        } catch (e) {
+          document.getElementById('viewMode').innerHTML =
+            '<div class="empty">Request not found.</div>';
+        }
+      }
 
-	  function renderDetail(r) {
-	      document.getElementById('dType').textContent = formatType(r.requestType);
-	      document.getElementById('dType').className = `type-badge`;
+      function renderDetail(r) {
+        document.getElementById('dType').textContent = formatType(
+          r.requestType
+        );
+        document.getElementById('dType').className = `type-badge`;
 
-	      document.getElementById('dUrgency').textContent = formatUrgency(r.urgencyLevel);
-	      document.getElementById('dUrgency').className = `urgency-badge urgency-${r.urgencyLevel}`;
+        document.getElementById('dUrgency').textContent = formatUrgency(
+          r.urgencyLevel
+        );
+        document.getElementById('dUrgency').className =
+          `urgency-badge urgency-${r.urgencyLevel}`;
 
-	      document.getElementById('dStatus').textContent = r.requestStatus;
-	      document.getElementById('dStatus').className = `status-pill status-${r.requestStatus}`;
+        document.getElementById('dStatus').textContent = r.requestStatus;
+        document.getElementById('dStatus').className =
+          `status-pill status-${r.requestStatus}`;
 
-	      document.getElementById('dTitle').textContent = r.requestTitle || 'Untitled';
+        document.getElementById('dTitle').textContent =
+          r.requestTitle || 'Untitled';
 
-	      // ADD user + family info here
-	      document.getElementById('dMeta').innerHTML = `
+        // ADD user + family info here
+        document.getElementById('dMeta').innerHTML = `
 	          <span>👤 ${r.requestingUserName || 'Unknown'}</span> · 
 	          <span>👨‍👩‍👧‍👦 ${r.requestingFamilyName || 'Unknown Family'}</span> · 
 	          <span>⭐ ${r.familyTrustScore?.toFixed(1) ?? '0.0'}</span><br/>
@@ -201,21 +211,21 @@
 	          <span>Posted ${formatDate(r.createdAt)}</span>
 	      `;
 
-	      document.getElementById('dDesc').textContent =
-	          r.requestDescription || 'No description provided.';
+        document.getElementById('dDesc').textContent =
+          r.requestDescription || 'No description provided.';
 
-	      // Status update actions
-	      if (r.requestStatus === 'open') {
-	          document.getElementById('detailActions').innerHTML = `
+        // Status update actions
+        if (r.requestStatus === 'open') {
+          document.getElementById('detailActions').innerHTML = `
 	              <button class="btn-status btn-matched" onclick="updateStatus('${r.requestId}', 'matched')">Mark as Matched</button>
 	              <button class="btn-status btn-cancel-req" onclick="updateStatus('${r.requestId}', 'cancelled')">Cancel Request</button>
 	          `;
-	      } else if (r.requestStatus === 'matched') {
-	          document.getElementById('detailActions').innerHTML = `
+        } else if (r.requestStatus === 'matched') {
+          document.getElementById('detailActions').innerHTML = `
 	              <button class="btn-status btn-completed" onclick="updateStatus('${r.requestId}', 'completed')">Mark as Completed</button>
 	          `;
-	      }
-	  }
+        }
+      }
 
       async function updateStatus(id, status) {
         await fetch(`/request/${id}/status?status=${status}`, {
@@ -224,10 +234,12 @@
         loadRequest(id);
       }
 
-	  async function loadUserContext() {
-	      if (serverFamilyId) document.getElementById('cFamilyId').value = serverFamilyId;
-	      if (serverUserId) document.getElementById('cUserId').value = serverUserId;
-	  }
+      async function loadUserContext() {
+        if (serverFamilyId)
+          document.getElementById('cFamilyId').value = serverFamilyId;
+        if (serverUserId)
+          document.getElementById('cUserId').value = serverUserId;
+      }
 
       async function submitRequest() {
         const title = document.getElementById('cTitle').value.trim();

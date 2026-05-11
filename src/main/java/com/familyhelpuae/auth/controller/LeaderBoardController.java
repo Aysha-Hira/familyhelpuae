@@ -18,9 +18,15 @@ public class LeaderBoardController {
     LeaderBoardController(FamilyService FamilyService) {
         this.FamilyService = FamilyService;
     }
+
     @GetMapping("/leaderboard")
     public String leaderboard(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         // Get all families sorted by trust score descending
+
+        if (userDetails == null) {
+            return "redirect:/register";
+        }
+
         List<com.familyhelpuae.family.model.Family> families = FamilyService.getAllFamilies()
                 .stream()
                 .sorted((a, b) -> Double.compare(b.getFamilyTrustScore(), a.getFamilyTrustScore()))

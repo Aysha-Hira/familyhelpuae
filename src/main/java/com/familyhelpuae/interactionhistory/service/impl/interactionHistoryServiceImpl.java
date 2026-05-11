@@ -141,9 +141,9 @@ public class interactionHistoryServiceImpl implements interactionHistoryService 
         double currentHelpedScore = familyService.getTrustScore(interaction.getHelpedFamilyId());
         
         familyService.setTrustScore(interaction.getHelpingFamilyId(), 
-            Math.max(0, Math.min(10, currentHelpingScore + helpingFamilyChange)));
+            Math.max(0, Math.min(6, currentHelpingScore + helpingFamilyChange)));
         familyService.setTrustScore(interaction.getHelpedFamilyId(), 
-            Math.max(0, Math.min(10, currentHelpedScore + helpedFamilyChange)));
+            Math.max(0, Math.min(6, currentHelpedScore + helpedFamilyChange)));
     }
 
     @Override

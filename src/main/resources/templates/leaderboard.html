@@ -1,282 +1,432 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trust Score Leaderboard – Family Help UAE</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/register.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/register.css" />
     <style>
-        .leaderboard-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .leaderboard-header h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-        .leaderboard-header p {
-            color: var(--muted);
-            font-size: 14px;
-        }
+      .leaderboard-header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+      .leaderboard-header h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .leaderboard-header p {
+        color: var(--muted);
+        font-size: 14px;
+      }
 
-        /* Top 3 podium */
-        .podium {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-        .podium-slot {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        .podium-block {
-            width: 110px;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 16px 8px 12px;
-            color: white;
-            font-weight: 700;
-        }
-        .podium-block.first  { height: 140px; background: linear-gradient(135deg, #f5a623, #f39c12); }
-        .podium-block.second { height: 100px; background: linear-gradient(135deg, #bdc3c7, #95a5a6); }
-        .podium-block.third  { height: 80px;  background: linear-gradient(135deg, #cd7f32, #a0522d); }
-        .podium-rank {
-            font-size: 28px;
-        }
-        .podium-name {
-            font-size: 13px;
-            font-weight: 600;
-            text-align: center;
-            margin-top: 8px;
-            color: #333;
-        }
-        .podium-score {
-            font-size: 12px;
-            color: var(--muted);
-        }
+      /* Top 3 podium */
+      .podium {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 16px;
+        margin-bottom: 40px;
+      }
+      .podium-slot {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .podium-block {
+        width: 110px;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 16px 8px 12px;
+        color: white;
+        font-weight: 700;
+      }
+      .podium-block.first {
+        height: 140px;
+        background: linear-gradient(135deg, #f5a623, #f39c12);
+      }
+      .podium-block.second {
+        height: 100px;
+        background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+      }
+      .podium-block.third {
+        height: 80px;
+        background: linear-gradient(135deg, #cd7f32, #a0522d);
+      }
+      .podium-rank {
+        font-size: 28px;
+      }
+      .podium-name {
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 8px;
+        color: #333;
+      }
+      .podium-score {
+        font-size: 12px;
+        color: var(--muted);
+      }
 
-        /* Full table */
-        .rank-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .rank-table thead tr {
-            background: var(--green-light, #e8f5e9);
-            color: var(--green);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .rank-table th, .rank-table td {
-            padding: 14px 16px;
-            text-align: left;
-        }
-        .rank-table tbody tr {
-            border-bottom: 1px solid var(--border, #eee);
-            transition: background 0.15s;
-        }
-        .rank-table tbody tr:hover {
-            background: #f9fafb;
-        }
-        .rank-table tbody tr.current-family {
-            background: #f0faf0;
-        }
-        .rank-num {
-            font-weight: 700;
-            font-size: 15px;
-            color: var(--muted);
-            width: 40px;
-        }
-        .rank-num.top3 {
-            font-size: 20px;
-        }
-        .family-name-cell {
-            font-weight: 600;
-            font-size: 15px;
-        }
-        .you-badge {
-            display: inline-block;
-            background: var(--green-light, #e8f5e9);
-            color: var(--green);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 50px;
-            margin-left: 8px;
-            vertical-align: middle;
-        }
-        .location-cell {
-            font-size: 13px;
-            color: var(--muted);
-        }
-        .members-cell {
-            font-size: 13px;
-            color: #555;
-        }
-        .score-cell {
-            font-weight: 700;
-            font-size: 15px;
-        }
-        .score-bar-wrap {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .mini-bar {
-            width: 80px;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 3px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .mini-fill {
-            height: 100%;
-            background: var(--green, #27ae60);
-            border-radius: 3px;
-        }
+      /* Full table */
+      .rank-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .rank-table thead tr {
+        background: var(--green-light, #e8f5e9);
+        color: var(--green);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .rank-table th,
+      .rank-table td {
+        padding: 14px 16px;
+        text-align: left;
+      }
+      .rank-table tbody tr {
+        border-bottom: 1px solid var(--border, #eee);
+        transition: background 0.15s;
+      }
+      .rank-table tbody tr:hover {
+        background: #f9fafb;
+      }
+      .rank-table tbody tr.current-family {
+        background: #f0faf0;
+      }
+      .rank-num {
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--muted);
+        width: 40px;
+      }
+      .rank-num.top3 {
+        font-size: 20px;
+      }
+      .family-name-cell {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .you-badge {
+        display: inline-block;
+        background: var(--green-light, #e8f5e9);
+        color: var(--green);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 50px;
+        margin-left: 8px;
+        vertical-align: middle;
+      }
+      .location-cell {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .members-cell {
+        font-size: 13px;
+        color: #555;
+      }
+      .score-cell {
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .score-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .mini-bar {
+        width: 80px;
+        height: 6px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .mini-fill {
+        height: 100%;
+        background: var(--green, #27ae60);
+        border-radius: 3px;
+      }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px;
-            color: var(--muted);
-        }
-        .nav-links {
-            text-align: center;
-            margin-top: 32px;
-        }
-        .nav-links a {
-            color: var(--green);
-            text-decoration: none;
-            margin: 0 12px;
-            font-size: 14px;
-        }
-        .updated-at {
-            text-align: right;
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
+      .empty-state {
+        text-align: center;
+        padding: 60px;
+        color: var(--muted);
+      }
+      .nav-links {
+        text-align: center;
+        margin-top: 32px;
+      }
+      .nav-links a {
+        color: var(--green);
+        text-decoration: none;
+        margin: 0 12px;
+        font-size: 14px;
+      }
+      .updated-at {
+        text-align: right;
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      /* Sidebar */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: #fff;
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 28px 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+      }
+
+      .sidebar-logo {
+        font-family: 'DM Serif Display', serif;
+        font-size: 18px;
+        color: var(--green);
+        padding: 0 24px 28px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 0 12px;
+        flex: 1;
+        justify-content: flex-start;
+        align-items: stretch;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 16px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+        transition: all 0.15s;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: var(--green-light);
+        color: var(--green);
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        font-size: 16px;
+      }
+
+      .sidebar-footer {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+      }
+
+      .logout {
+        color: #c0392b !important;
+      }
+      .logout:hover {
+        background: #fdf0ef !important;
+        color: #c0392b !important;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <!-- top bar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">Family Help UAE</div>
+      <nav class="sidebar-nav">
+        <a href="/home" class="nav-item active">
+          <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="/profile" class="nav-item">
+          <span class="nav-icon">👤</span> My Profile
+        </a>
+        <a href="/family" class="nav-item">
+          <span class="nav-icon">👨‍👩‍👧‍👦</span> My Family
+        </a>
+        <a href="/request/new" class="nav-item">
+          <span class="nav-icon">🙋</span> Post Request
+        </a>
+        <a href="/offer/my-offers" class="nav-item">
+          <span class="nav-icon">🤝</span> Post Offer
+        </a>
+        <a href="/interactions" class="nav-item">
+          <span class="nav-icon">📋</span> Interactions
+        </a>
+        <a href="/leaderboard" class="nav-item">
+          <span class="nav-icon">🌟</span> Learderboard
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/logout" class="nav-item logout">
+          <span class="nav-icon">🚪</span> Sign Out
+        </a>
+      </div>
+    </aside>
 
-<div class="logo">Family Help UAE</div>
+    <div class="logo">Family Help UAE</div>
 
-<div class="card" style="max-width: 900px;">
-    <div class="form-body">
-
+    <div class="card" style="max-width: 900px">
+      <div class="form-body">
         <div class="leaderboard-header">
-            <h2>🏆 Trust Score Leaderboard</h2>
-            <p>Families ranked by their community trust score</p>
+          <h2>🏆 Trust Score Leaderboard</h2>
+          <p>Families ranked by their community trust score</p>
         </div>
 
         <!-- Podium: top 3 -->
-        <div th:if="${families != null and families.size() >= 3}" class="podium">
-
-            <!-- 2nd place -->
-            <div class="podium-slot">
-                <div class="podium-block second">
-                    <span class="podium-rank">🥈</span>
-                </div>
-                <div class="podium-name" th:text="${families[1].familyName}">—</div>
-                <div class="podium-score" th:text="${#numbers.formatDecimal(families[1].familyTrustScore, 1, 2)}">0.00</div>
+        <div
+          th:if="${families != null and families.size() >= 3}"
+          class="podium"
+        >
+          <!-- 2nd place -->
+          <div class="podium-slot">
+            <div class="podium-block second">
+              <span class="podium-rank">🥈</span>
             </div>
-
-            <!-- 1st place -->
-            <div class="podium-slot">
-                <div class="podium-block first">
-                    <span class="podium-rank">🥇</span>
-                </div>
-                <div class="podium-name" th:text="${families[0].familyName}">—</div>
-                <div class="podium-score" th:text="${#numbers.formatDecimal(families[0].familyTrustScore, 1, 2)}">0.00</div>
+            <div class="podium-name" th:text="${families[1].familyName}">—</div>
+            <div
+              class="podium-score"
+              th:text="${#numbers.formatDecimal(families[1].familyTrustScore, 1, 2)}"
+            >
+              0.00
             </div>
+          </div>
 
-            <!-- 3rd place -->
-            <div class="podium-slot">
-                <div class="podium-block third">
-                    <span class="podium-rank">🥉</span>
-                </div>
-                <div class="podium-name" th:text="${families[2].familyName}">—</div>
-                <div class="podium-score" th:text="${#numbers.formatDecimal(families[2].familyTrustScore, 1, 2)}">0.00</div>
+          <!-- 1st place -->
+          <div class="podium-slot">
+            <div class="podium-block first">
+              <span class="podium-rank">🥇</span>
             </div>
+            <div class="podium-name" th:text="${families[0].familyName}">—</div>
+            <div
+              class="podium-score"
+              th:text="${#numbers.formatDecimal(families[0].familyTrustScore, 1, 2)}"
+            >
+              0.00
+            </div>
+          </div>
 
+          <!-- 3rd place -->
+          <div class="podium-slot">
+            <div class="podium-block third">
+              <span class="podium-rank">🥉</span>
+            </div>
+            <div class="podium-name" th:text="${families[2].familyName}">—</div>
+            <div
+              class="podium-score"
+              th:text="${#numbers.formatDecimal(families[2].familyTrustScore, 1, 2)}"
+            >
+              0.00
+            </div>
+          </div>
         </div>
 
         <!-- Full rankings table -->
         <div th:if="${families == null or families.empty}" class="empty-state">
-            <p>No families registered yet.</p>
+          <p>No families registered yet.</p>
         </div>
 
         <div th:if="${families != null and !families.empty}">
-            <div class="updated-at">Scores update after each interaction</div>
-            <table class="rank-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Family</th>
-                        <th>Location</th>
-                        <th>Members</th>
-                        <th>Trust Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="family, stat : ${families}"
-                        th:classappend="${family.familyId == currentFamilyId ? 'current-family' : ''}">
+          <div class="updated-at">Scores update after each interaction</div>
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Family</th>
+                <th>Location</th>
+                <th>Members</th>
+                <th>Trust Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                th:each="family, stat : ${families}"
+                th:classappend="${family.familyId == currentFamilyId ? 'current-family' : ''}"
+              >
+                <td
+                  class="rank-num"
+                  th:classappend="${stat.index < 3 ? ' top3' : ''}"
+                >
+                  <span th:if="${stat.index == 0}">🥇</span>
+                  <span th:if="${stat.index == 1}">🥈</span>
+                  <span th:if="${stat.index == 2}">🥉</span>
+                  <span
+                    th:if="${stat.index >= 3}"
+                    th:text="${stat.index + 1}"
+                  ></span>
+                </td>
 
-                        <td class="rank-num" th:classappend="${stat.index < 3 ? ' top3' : ''}">
-                            <span th:if="${stat.index == 0}">🥇</span>
-                            <span th:if="${stat.index == 1}">🥈</span>
-                            <span th:if="${stat.index == 2}">🥉</span>
-                            <span th:if="${stat.index >= 3}" th:text="${stat.index + 1}"></span>
-                        </td>
+                <td class="family-name-cell">
+                  <span th:text="${family.familyName}">Family Name</span>
+                  <span
+                    th:if="${family.familyId == currentFamilyId}"
+                    class="you-badge"
+                    >You</span
+                  >
+                </td>
 
-                        <td class="family-name-cell">
-                            <span th:text="${family.familyName}">Family Name</span>
-                            <span th:if="${family.familyId == currentFamilyId}" class="you-badge">You</span>
-                        </td>
+                <td class="location-cell">
+                  <span
+                    th:if="${family.city != null}"
+                    th:text="${family.city + ', ' + (family.country ?: '')}"
+                  ></span>
+                  <span th:if="${family.city == null}" style="color: #ccc"
+                    >—</span
+                  >
+                </td>
 
-                        <td class="location-cell">
-                            <span th:if="${family.city != null}" th:text="${family.city + ', ' + (family.country ?: '')}"></span>
-                            <span th:if="${family.city == null}" style="color: #ccc;">—</span>
-                        </td>
+                <td class="members-cell">
+                  <span
+                    th:text="${family.members != null ? family.members.size() : 0}"
+                    >0</span
+                  >
+                </td>
 
-                        <td class="members-cell">
-                            <span th:text="${family.members != null ? family.members.size() : 0}">0</span>
-                        </td>
-
-                        <td>
-                            <div class="score-bar-wrap">
-                                <span class="score-cell" th:text="${#numbers.formatDecimal(family.familyTrustScore, 1, 2)}">0.00</span>
-                                <div class="mini-bar">
-                                    <div class="mini-fill"
-                                         th:style="'width: ' + (${family.familyTrustScore} * 20) + '%'">
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-
-                    </tr>
-                </tbody>
-            </table>
+                <td>
+                  <div class="score-bar-wrap">
+                    <span
+                      class="score-cell"
+                      th:text="${#numbers.formatDecimal(family.familyTrustScore, 1, 2)}"
+                      >0.00</span
+                    >
+                    <div class="mini-bar">
+                      <div
+                        class="mini-fill"
+                        th:style="'width: ' + (${family.familyTrustScore} * 20) + '%'"
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="nav-links">
-            <a th:href="@{/home}">← Back to Home</a>
-            <a th:href="@{/interactions}">My Interactions</a>
+          <a th:href="@{/home}">← Back to Home</a>
+          <a th:href="@{/interactions}">My Interactions</a>
         </div>
-
+      </div>
     </div>
-</div>
-
-</body>
+  </body>
 </html>

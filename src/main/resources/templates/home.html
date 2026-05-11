@@ -30,9 +30,13 @@
         <a href="/offer/my-offers" class="nav-item">
           <span class="nav-icon">🤝</span> Post Offer
         </a>
-		<a href="/interactions" class="nav-item">
-		    <span class="nav-icon">📋</span> Interactions
-		</a>
+        <a href="/interactions" class="nav-item">
+          <span class="nav-icon">📋</span> Interactions
+        </a>
+
+        <a href="/leaderboard" class="nav-item">
+          <span class="nav-icon">🌟</span> Learderboard
+        </a>
       </nav>
       <div class="sidebar-footer">
         <a href="/logout" class="nav-item logout">
@@ -76,7 +80,7 @@
           </select>
         </div>
         <div class="filter-group search-group">
-            <label>Title</label>
+          <label>Title</label>
           <input
             type="text"
             id="searchTitle"
@@ -93,26 +97,29 @@
       </div>
     </main>
 
-    <script>	let allRequests = [];
+    <script>
+      let allRequests = [];
 
-	async function loadRequests(url) {
-	    try {
-	        const res = await fetch(url);
-	        allRequests = await res.json();
-	        renderFeed(allRequests);
-	    } catch (e) {
-	        document.getElementById('feed').innerHTML =
-	            '<div class="empty">Could not load requests.</div>';
-	    }
-	}
+      async function loadRequests(url) {
+        try {
+          const res = await fetch(url);
+          allRequests = await res.json();
+          renderFeed(allRequests);
+        } catch (e) {
+          document.getElementById('feed').innerHTML =
+            '<div class="empty">Could not load requests.</div>';
+        }
+      }
 
-	function renderFeed(requests) {
-	    const feed = document.getElementById('feed');
-	    if (!requests || requests.length === 0) {
-	        feed.innerHTML = '<div class="empty">No requests found.</div>';
-	        return;
-	    }
-	    feed.innerHTML = requests.map(r => `
+      function renderFeed(requests) {
+        const feed = document.getElementById('feed');
+        if (!requests || requests.length === 0) {
+          feed.innerHTML = '<div class="empty">No requests found.</div>';
+          return;
+        }
+        feed.innerHTML = requests
+          .map(
+            (r) => `
 	        <div class="card" onclick="window.location='/request?id=${r.requestId}'">
 	            <div class="card-header">
 	                <span class="type-badge type-${r.requestType}">${formatType(r.requestType)}</span>
@@ -126,44 +133,57 @@
 	                <span class="card-date">${formatDate(r.createdAt)}</span>
 	            </div>
 	        </div>
-	    `).join('');
-	}
+	    `
+          )
+          .join('');
+      }
 
-	function applyFilters() {
-	    const type = document.getElementById('filterType').value;
-	    const urgency = document.getElementById('filterUrgency').value;
-	    const title = document.getElementById('searchTitle').value.trim().toLowerCase();
+      function applyFilters() {
+        const type = document.getElementById('filterType').value;
+        const urgency = document.getElementById('filterUrgency').value;
+        const title = document
+          .getElementById('searchTitle')
+          .value.trim()
+          .toLowerCase();
 
-	    const filtered = allRequests.filter(r => {
-	        if (type && r.requestType !== type) return false;
-	        if (urgency && r.urgencyLevel !== urgency) return false;
-	        if (title && !(r.requestTitle || '').toLowerCase().includes(title)) return false;
-	        return true;
-	    });
+        const filtered = allRequests.filter((r) => {
+          if (type && r.requestType !== type) return false;
+          if (urgency && r.urgencyLevel !== urgency) return false;
+          if (title && !(r.requestTitle || '').toLowerCase().includes(title))
+            return false;
+          return true;
+        });
 
-	    renderFeed(filtered);
-	}
+        renderFeed(filtered);
+      }
 
-	function formatType(t) {
-	    const map = {
-	        childcare: 'Childcare', tutoring: 'Tutoring', transport: 'Transport',
-	        elder_care: 'Elder Care', household: 'Household', other: 'Other'
-	    };
-	    return map[t] || t;
-	}
+      function formatType(t) {
+        const map = {
+          childcare: 'Childcare',
+          tutoring: 'Tutoring',
+          transport: 'Transport',
+          elder_care: 'Elder Care',
+          household: 'Household',
+          other: 'Other',
+        };
+        return map[t] || t;
+      }
 
-	function formatUrgency(u) {
-	    const map = { high: '🔴 High', medium: '🟡 Medium', low: '🟢 Low' };
-	    return map[u] || u;
-	}
+      function formatUrgency(u) {
+        const map = { high: '🔴 High', medium: '🟡 Medium', low: '🟢 Low' };
+        return map[u] || u;
+      }
 
-	function formatDate(d) {
-	    if (!d) return '';
-	    return new Date(d).toLocaleDateString('en-AE', { day: 'numeric', month: 'short' });
-	}
+      function formatDate(d) {
+        if (!d) return '';
+        return new Date(d).toLocaleDateString('en-AE', {
+          day: 'numeric',
+          month: 'short',
+        });
+      }
 
-	// Load on page start
-	loadRequests('/request/feed');
+      // Load on page start
+      loadRequests('/request/feed');
     </script>
   </body>
 </html>
