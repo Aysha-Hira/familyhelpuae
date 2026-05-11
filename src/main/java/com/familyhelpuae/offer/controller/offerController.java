@@ -1,3 +1,12 @@
+/**
+ * Section: 104
+ * Group number: 4
+ * Student IDs and names: 
+ * Laisa Sanjida Isra: 1089635
+ * Fatima Syed Wasti: 1095190
+ * Aysha Hira: 1088000
+ */
+
 package com.familyhelpuae.offer.controller;
 
 import java.util.List;
@@ -77,10 +86,10 @@ public class offerController {
     public ResponseEntity<Offer> updateStatus(@PathVariable String offerId, @RequestParam String status) {
         return ResponseEntity.ok(offerService.updateStatus(offerId, status));
     }
-    
+
     @PostMapping("/{offerId}/requests/{requestId}")
     public ResponseEntity<Offer> linkRequest(@PathVariable String offerId,
-                                              @PathVariable String requestId) {
+            @PathVariable String requestId) {
         return ResponseEntity.ok(offerService.linkRequest(offerId, requestId));
     }
 }

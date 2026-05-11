@@ -1,3 +1,12 @@
+/**
+ * Section: 104
+ * Group number: 4
+ * Student IDs and names: 
+ * Laisa Sanjida Isra: 1089635
+ * Fatima Syed Wasti: 1095190
+ * Aysha Hira: 1088000
+ */
+
 package com.familyhelpuae.offer.service.impl;
 
 import java.time.LocalDateTime;
@@ -35,7 +44,6 @@ public class offerServiceImpl implements offerService {
         offer.setUpdatedAt(now);
         Offer saved = offerRepository.save(offer);
 
-
         if (offer.getLinkedRequestId() != null) {
             requestService.linkOffer(offer.getLinkedRequestId(), saved.getOfferId());
         }
@@ -57,7 +65,7 @@ public class offerServiceImpl implements offerService {
     @Override
     public Offer updateOffer(Offer updatedOffer, @NonNull String offerId) {
         Offer existing = getOfferById(offerId);
-        
+
         if (updatedOffer.getOfferType() != null)
             existing.setOfferType(updatedOffer.getOfferType());
         if (updatedOffer.getOfferLocation() != null)
@@ -68,14 +76,14 @@ public class offerServiceImpl implements offerService {
             existing.setOfferDescription(updatedOffer.getOfferDescription());
         if (updatedOffer.getOfferStatus() != null)
             existing.setOfferStatus(updatedOffer.getOfferStatus());
-        
+
         existing.setUpdatedAt(LocalDateTime.now().format(formatter));
-        
+
         return offerRepository.save(existing);
     }
 
     @Override
-    public void deleteOffer(@NonNull String offerId) {  // ADD @NonNull HERE
+    public void deleteOffer(@NonNull String offerId) { // ADD @NonNull HERE
         if (!offerRepository.existsById(offerId)) {
             throw new ResourceNotFound("Offer", "offerId", offerId);
         }
@@ -83,33 +91,33 @@ public class offerServiceImpl implements offerService {
     }
 
     @Override
-    public List<Offer> getOffersByFamily(@NonNull String familyId) {  // ADD @NonNull HERE
+    public List<Offer> getOffersByFamily(@NonNull String familyId) { // ADD @NonNull HERE
         return offerRepository.findByOfferingFamilyId(familyId);
     }
 
     @Override
-    public List<Offer> getOffersByUser(@NonNull String userId) {  // ADD @NonNull HERE
+    public List<Offer> getOffersByUser(@NonNull String userId) { // ADD @NonNull HERE
         return offerRepository.findByOfferingUserId(userId);
     }
 
     @Override
-    public List<Offer> getOffersByStatus(@NonNull String status) {  // ADD @NonNull HERE
+    public List<Offer> getOffersByStatus(@NonNull String status) { // ADD @NonNull HERE
         return offerRepository.findByOfferStatus(status);
     }
 
     @Override
-    public List<Offer> getOffersByType(@NonNull String offerType) {  // ADD @NonNull HERE
+    public List<Offer> getOffersByType(@NonNull String offerType) { // ADD @NonNull HERE
         return offerRepository.findByOfferType(offerType);
     }
 
     @Override
-    public Offer updateStatus(@NonNull String offerId, @NonNull String status) {  // ADD @NonNull HERE
+    public Offer updateStatus(@NonNull String offerId, @NonNull String status) { // ADD @NonNull HERE
         Offer existing = getOfferById(offerId);
         existing.setOfferStatus(status);
         existing.setUpdatedAt(LocalDateTime.now().format(formatter));
         return offerRepository.save(existing);
     }
-    
+
     @Override
     public Offer linkRequest(String offerId, String requestId) {
         Offer offer = getOfferById(offerId);
@@ -118,11 +126,11 @@ public class offerServiceImpl implements offerService {
         return offerRepository.save(offer);
     }
 
-	@Override
-	public Offer unlinkRequest(String offerId, String requestId) {
-		Offer offer = getOfferById(offerId);
-		requestService.unlinkOffer(requestId, offerId);
-		offer.setUpdatedAt(LocalDateTime.now().format(formatter));
+    @Override
+    public Offer unlinkRequest(String offerId, String requestId) {
+        Offer offer = getOfferById(offerId);
+        requestService.unlinkOffer(requestId, offerId);
+        offer.setUpdatedAt(LocalDateTime.now().format(formatter));
         return offerRepository.save(offer);
-	}
+    }
 }

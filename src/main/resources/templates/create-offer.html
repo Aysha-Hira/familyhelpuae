@@ -1,174 +1,248 @@
-<!DOCTYPE html>
+/** * Section: 104 * Group number: 4 * Student IDs and names: * Laisa Sanjida
+Isra: 1089635 * Fatima Syed Wasti: 1095190 * Aysha Hira: 1088000 */
+
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Offer – Family Help UAE</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/register.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/register.css" />
     <style>
-        .offer-type-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .offer-type-btn {
-            background: #f5f5f0;
-            border: 1.5px solid var(--border);
-            border-radius: 50px;
-            padding: 10px 16px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-        .offer-type-btn.selected {
-            background: var(--green);
-            border-color: var(--green);
-            color: white;
-        }
-        .offer-type-btn:hover {
-            border-color: var(--green);
-        }
-        .availability-row {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .availability-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .availability-option input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--green);
-        }
-        textarea {
-            width: 100%;
-            padding: 13px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 100px;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: var(--green);
-            box-shadow: 0 0 0 3px rgba(26,107,74,0.1);
-        }
-        .success-message {
-            background: var(--green-light);
-            border: 1px solid #a8d5bc;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 13px;
-            color: var(--green);
-            margin-bottom: 20px;
-        }
+      .offer-type-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .offer-type-btn {
+        background: #f5f5f0;
+        border: 1.5px solid var(--border);
+        border-radius: 50px;
+        padding: 10px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .offer-type-btn.selected {
+        background: var(--green);
+        border-color: var(--green);
+        color: white;
+      }
+      .offer-type-btn:hover {
+        border-color: var(--green);
+      }
+      .availability-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .availability-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .availability-option input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--green);
+      }
+      textarea {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        resize: vertical;
+        min-height: 100px;
+      }
+      textarea:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(26, 107, 74, 0.1);
+      }
+      .success-message {
+        background: var(--green-light);
+        border: 1px solid #a8d5bc;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: var(--green);
+        margin-bottom: 20px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="logo">Family Help UAE</div>
 
-<div class="logo">Family Help UAE</div>
-
-<div class="card" style="max-width: 560px;">
-    <div class="form-body">
+    <div class="card" style="max-width: 560px">
+      <div class="form-body">
         <h2>Offer Help</h2>
-        <p class="subtitle">Share what support you can provide to other families.</p>
+        <p class="subtitle">
+          Share what support you can provide to other families.
+        </p>
 
-        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
-        <div th:if="${errorMessage}" class="global-error" th:text="${errorMessage}"></div>
+        <div
+          th:if="${successMessage}"
+          class="success-message"
+          th:text="${successMessage}"
+        ></div>
+        <div
+          th:if="${errorMessage}"
+          class="global-error"
+          th:text="${errorMessage}"
+        ></div>
 
         <form th:action="@{/offer/create}" th:object="${offer}" method="post">
-
-            <div class="form-group">
-                <label>Type of Help</label>
-                <div class="offer-type-grid">
-                    <div th:each="type : ${offerTypes}" 
-                         class="offer-type-btn" 
-                         th:text="${type}"
-                         th:data-value="${type}"
-                         onclick="selectOfferType(this, '${type}')">
-                    </div>
-                </div>
-                <input type="hidden" id="offerType" name="offerType" th:field="*{offerType}" required />
-                <span class="field-error" th:if="${#fields.hasErrors('offerType')}" th:errors="*{offerType}"></span>
+          <div class="form-group">
+            <label>Type of Help</label>
+            <div class="offer-type-grid">
+              <div
+                th:each="type : ${offerTypes}"
+                class="offer-type-btn"
+                th:text="${type}"
+                th:data-value="${type}"
+                onclick="selectOfferType(this, '${type}')"
+              ></div>
             </div>
+            <input
+              type="hidden"
+              id="offerType"
+              name="offerType"
+              th:field="*{offerType}"
+              required
+            />
+            <span
+              class="field-error"
+              th:if="${#fields.hasErrors('offerType')}"
+              th:errors="*{offerType}"
+            ></span>
+          </div>
 
-            <div class="form-group">
-                <label for="offerLocation">Location</label>
-                <input type="text" id="offerLocation" th:field="*{offerLocation}" 
-                       placeholder="e.g., Abu Dhabi, Dubai Marina, Sharjah" />
-                <span class="field-error" th:if="${#fields.hasErrors('offerLocation')}" th:errors="*{offerLocation}"></span>
-            </div>
+          <div class="form-group">
+            <label for="offerLocation">Location</label>
+            <input
+              type="text"
+              id="offerLocation"
+              th:field="*{offerLocation}"
+              placeholder="e.g., Abu Dhabi, Dubai Marina, Sharjah"
+            />
+            <span
+              class="field-error"
+              th:if="${#fields.hasErrors('offerLocation')}"
+              th:errors="*{offerLocation}"
+            ></span>
+          </div>
 
-            <div class="form-group">
-                <label>Availability</label>
-                <div class="availability-row">
-                    <label class="availability-option">
-                        <input type="radio" name="availabilityRadio" value="Weekdays" onclick="setAvailability('Weekdays')" />
-                        <span>Weekdays</span>
-                    </label>
-                    <label class="availability-option">
-                        <input type="radio" name="availabilityRadio" value="Weekends" onclick="setAvailability('Weekends')" />
-                        <span>Weekends</span>
-                    </label>
-                    <label class="availability-option">
-                        <input type="radio" name="availabilityRadio" value="Flexible" onclick="setAvailability('Flexible')" />
-                        <span>Flexible</span>
-                    </label>
-                    <label class="availability-option">
-                        <input type="radio" name="availabilityRadio" value="Specific Dates" onclick="setAvailability('Specific Dates')" />
-                        <span>Specific Dates</span>
-                    </label>
-                </div>
-                <input type="hidden" id="availability" name="availability" th:field="*{availability}" />
-                <span class="field-error" th:if="${#fields.hasErrors('availability')}" th:errors="*{availability}"></span>
+          <div class="form-group">
+            <label>Availability</label>
+            <div class="availability-row">
+              <label class="availability-option">
+                <input
+                  type="radio"
+                  name="availabilityRadio"
+                  value="Weekdays"
+                  onclick="setAvailability('Weekdays')"
+                />
+                <span>Weekdays</span>
+              </label>
+              <label class="availability-option">
+                <input
+                  type="radio"
+                  name="availabilityRadio"
+                  value="Weekends"
+                  onclick="setAvailability('Weekends')"
+                />
+                <span>Weekends</span>
+              </label>
+              <label class="availability-option">
+                <input
+                  type="radio"
+                  name="availabilityRadio"
+                  value="Flexible"
+                  onclick="setAvailability('Flexible')"
+                />
+                <span>Flexible</span>
+              </label>
+              <label class="availability-option">
+                <input
+                  type="radio"
+                  name="availabilityRadio"
+                  value="Specific Dates"
+                  onclick="setAvailability('Specific Dates')"
+                />
+                <span>Specific Dates</span>
+              </label>
             </div>
+            <input
+              type="hidden"
+              id="availability"
+              name="availability"
+              th:field="*{availability}"
+            />
+            <span
+              class="field-error"
+              th:if="${#fields.hasErrors('availability')}"
+              th:errors="*{availability}"
+            ></span>
+          </div>
 
-            <div class="form-group">
-                <label for="offerDescription">Description</label>
-                <textarea id="offerDescription" th:field="*{offerDescription}" 
-                          placeholder="Describe the help you can offer..."></textarea>
-                <span class="field-error" th:if="${#fields.hasErrors('offerDescription')}" th:errors="*{offerDescription}"></span>
-            </div>
+          <div class="form-group">
+            <label for="offerDescription">Description</label>
+            <textarea
+              id="offerDescription"
+              th:field="*{offerDescription}"
+              placeholder="Describe the help you can offer..."
+            ></textarea>
+            <span
+              class="field-error"
+              th:if="${#fields.hasErrors('offerDescription')}"
+              th:errors="*{offerDescription}"
+            ></span>
+          </div>
 
-            <div class="form-footer">
-                <a th:href="@{/home}" class="btn-back">← Cancel</a>
-                <button type="submit" class="btn-continue">
-                    Post Offer
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                         stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </button>
-            </div>
+          <div class="form-footer">
+            <a th:href="@{/home}" class="btn-back">← Cancel</a>
+            <button type="submit" class="btn-continue">
+              Post Offer
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </form>
+      </div>
     </div>
-</div>
 
-<script>
-    function selectOfferType(element, type) {
+    <script>
+      function selectOfferType(element, type) {
         // Remove selected class from all buttons
-        document.querySelectorAll('.offer-type-btn').forEach(btn => {
-            btn.classList.remove('selected');
+        document.querySelectorAll('.offer-type-btn').forEach((btn) => {
+          btn.classList.remove('selected');
         });
         // Add selected class to clicked button
         element.classList.add('selected');
         // Set hidden input value
         document.getElementById('offerType').value = type;
-    }
-    
-    function setAvailability(value) {
-        document.getElementById('availability').value = value;
-    }
-</script>
+      }
 
-</body>
+      function setAvailability(value) {
+        document.getElementById('availability').value = value;
+      }
+    </script>
+  </body>
 </html>

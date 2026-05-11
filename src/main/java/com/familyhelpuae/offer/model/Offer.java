@@ -1,3 +1,12 @@
+/**
+ * Section: 104
+ * Group number: 4
+ * Student IDs and names: 
+ * Laisa Sanjida Isra: 1089635
+ * Fatima Syed Wasti: 1095190
+ * Aysha Hira: 1088000
+ */
+
 package com.familyhelpuae.offer.model;
 
 import org.springframework.data.annotation.Id;
@@ -6,37 +15,37 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "offer")
 public class Offer {
-    
+
     @Id
     private String offerId;
-    
+
     @Field("offeringFamilyId")
     private String offeringFamilyId;
-    
+
     @Field("offeringUserId")
     private String offeringUserId;
-    
+
     @Field("offerType")
     private String offerType;
-    
+
     @Field("offerLocation")
     private String offerLocation;
-    
+
     @Field("availability")
     private String availability;
-    
+
     @Field("offerDescription")
     private String offerDescription;
-    
+
     @Field("offerStatus")
     private String offerStatus;
-    
+
     @Field("linkedRequestId")
     private String linkedRequestId;
 
-	@Field("createdAt")
+    @Field("createdAt")
     private String createdAt;
-    
+
     @Field("updatedAt")
     private String updatedAt;
 
@@ -72,10 +81,10 @@ public class Offer {
     public String getOfferStatus() {
         return offerStatus;
     }
-    
+
     public String getLinkedRequestId() {
-		return linkedRequestId;
-	}
+        return linkedRequestId;
+    }
 
     public String getCreatedAt() {
         return createdAt;
@@ -117,10 +126,10 @@ public class Offer {
     public void setOfferStatus(String offerStatus) {
         this.offerStatus = offerStatus;
     }
-    
+
     public void setLinkedRequestId(String linkedRequestId) {
-		this.linkedRequestId = linkedRequestId;
-	}
+        this.linkedRequestId = linkedRequestId;
+    }
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;

@@ -1,3 +1,12 @@
+/**
+ * Section: 104
+ * Group number: 4
+ * Student IDs and names: 
+ * Laisa Sanjida Isra: 1089635
+ * Fatima Syed Wasti: 1095190
+ * Aysha Hira: 1088000
+ */
+
 package com.familyhelpuae.interactionhistory.controller;
 
 import java.util.List;
@@ -37,7 +46,7 @@ public class InteractionHistoryController {
             @RequestParam(required = false) String offerId) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(interactionService.recordInteraction(
-                    helpingFamilyId, helpedFamilyId, interactionType, description, requestId, offerId));
+                        helpingFamilyId, helpedFamilyId, interactionType, description, requestId, offerId));
     }
 
     @GetMapping("/{interactionId}")
@@ -67,20 +76,20 @@ public class InteractionHistoryController {
 
     @PutMapping("/update/{interactionId}")
     public ResponseEntity<InteractionHistory> update(@PathVariable String interactionId,
-                                                      @RequestBody InteractionHistory interaction) {
+            @RequestBody InteractionHistory interaction) {
         return ResponseEntity.ok(interactionService.updateInteraction(interactionId, interaction));
     }
 
     @PutMapping("/{interactionId}/status")
     public ResponseEntity<InteractionHistory> updateStatus(@PathVariable String interactionId,
-                                                            @RequestParam String status) {
+            @RequestParam String status) {
         return ResponseEntity.ok(interactionService.updateStatus(interactionId, status));
     }
 
     @PutMapping("/{interactionId}/rate")
     public ResponseEntity<InteractionHistory> addRating(@PathVariable String interactionId,
-                                                         @RequestParam String role,
-                                                         @RequestParam double rating) {
+            @RequestParam String role,
+            @RequestParam double rating) {
         return ResponseEntity.ok(interactionService.addRating(interactionId, role, rating));
     }
 

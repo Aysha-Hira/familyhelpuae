@@ -1,3 +1,12 @@
+/**
+ * Section: 104
+ * Group number: 4
+ * Student IDs and names: 
+ * Laisa Sanjida Isra: 1089635
+ * Fatima Syed Wasti: 1095190
+ * Aysha Hira: 1088000
+ */
+
 package com.familyhelpuae.user.service.impl;
 
 import java.util.List;
@@ -61,7 +70,7 @@ public class UserRelationshipServiceImpl implements UserRelationshipService {
 
 		if (user.equals(anotherUser))
 			throw new IllegalArgumentException("Relationship cannot be added to self");
-		
+
 		if (user.hasRelationship(anotherUserID))
 			throw new IllegalArgumentException(
 					"Relationship already exists between user " + userId + " and user " + anotherUserID);

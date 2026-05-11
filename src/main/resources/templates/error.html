@@ -1,303 +1,330 @@
-<!DOCTYPE html>
+/** * Section: 104 * Group number: 4 * Student IDs and names: * Laisa Sanjida
+Isra: 1089635 * Fatima Syed Wasti: 1095190 * Aysha Hira: 1088000 */
+
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Error – Family Help UAE</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --green: #1a6b4a;
-            --red: #c0392b;
-            --red-light: #fdf0ef;
-            --red-border: #f5c6c2;
-            --gray-bg: #f2f2f0;
-            --border: #e0e0e0;
-            --text: #1a1a1a;
-            --muted: #888;
+      :root {
+        --green: #1a6b4a;
+        --red: #c0392b;
+        --red-light: #fdf0ef;
+        --red-border: #f5c6c2;
+        --gray-bg: #f2f2f0;
+        --border: #e0e0e0;
+        --text: #1a1a1a;
+        --muted: #888;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--gray-bg);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .logo {
+        font-family: 'DM Serif Display', serif;
+        font-size: 22px;
+        color: var(--green);
+        margin-bottom: 24px;
+      }
+
+      .card {
+        background: #fff;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 640px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+        animation: slideUp 0.4s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--gray-bg);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        .logo {
-            font-family: 'DM Serif Display', serif;
-            font-size: 22px;
-            color: var(--green);
-            margin-bottom: 24px;
-        }
+      /* Header bar */
+      .error-header {
+        background: var(--red);
+        padding: 20px 32px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
 
-        .card {
-            background: #fff;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 640px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-            overflow: hidden;
-            animation: slideUp 0.4s ease;
-        }
+      .error-header .icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+      .error-header h1 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 2px;
+      }
 
-        /* Header bar */
-        .error-header {
-            background: var(--red);
-            padding: 20px 32px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+      .error-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.8);
+      }
 
-        .error-header .icon {
-            width: 40px; height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
+      /* Body */
+      .error-body {
+        padding: 28px 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
 
-        .error-header h1 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 2px;
-        }
+      /* Info row */
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
 
-        .error-header p {
-            font-size: 13px;
-            color: rgba(255,255,255,0.8);
-        }
+      .info-item {
+        background: #fafafa;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
 
-        /* Body */
-        .error-body {
-            padding: 28px 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+      .info-item .label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
 
-        /* Info row */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+      .info-item .value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        word-break: break-all;
+      }
 
-        .info-item {
-            background: #fafafa;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px 16px;
-        }
+      .info-item.full {
+        grid-column: 1 / -1;
+      }
 
-        .info-item .label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--muted);
-            margin-bottom: 4px;
-        }
+      .status-badge {
+        display: inline-block;
+        background: var(--red-light);
+        color: var(--red);
+        border: 1px solid var(--red-border);
+        border-radius: 6px;
+        padding: 2px 10px;
+        font-size: 13px;
+        font-weight: 700;
+      }
 
-        .info-item .value {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-            word-break: break-all;
-        }
+      /* Stack trace */
+      .section-label {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
 
-        .info-item.full { grid-column: 1 / -1; }
+      .trace-box {
+        background: #1a1a1a;
+        border-radius: 10px;
+        padding: 16px 20px;
+        overflow-x: auto;
+        max-height: 280px;
+        overflow-y: auto;
+      }
 
-        .status-badge {
-            display: inline-block;
-            background: var(--red-light);
-            color: var(--red);
-            border: 1px solid var(--red-border);
-            border-radius: 6px;
-            padding: 2px 10px;
-            font-size: 13px;
-            font-weight: 700;
-        }
+      .trace-box pre {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #e0e0e0;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
 
-        /* Stack trace */
-        .section-label {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
+      .trace-box pre .highlight {
+        color: #ff6b6b;
+        font-weight: bold;
+      }
 
-        .trace-box {
-            background: #1a1a1a;
-            border-radius: 10px;
-            padding: 16px 20px;
-            overflow-x: auto;
-            max-height: 280px;
-            overflow-y: auto;
-        }
+      /* Message box */
+      .message-box {
+        background: var(--red-light);
+        border: 1px solid var(--red-border);
+        border-radius: 10px;
+        padding: 14px 18px;
+        font-size: 14px;
+        color: var(--red);
+        line-height: 1.5;
+        font-weight: 500;
+      }
 
-        .trace-box pre {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            line-height: 1.6;
-            color: #e0e0e0;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
+      /* Footer */
+      .error-footer {
+        padding: 20px 32px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+      }
 
-        .trace-box pre .highlight {
-            color: #ff6b6b;
-            font-weight: bold;
-        }
+      .btn {
+        padding: 10px 22px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
 
-        /* Message box */
-        .message-box {
-            background: var(--red-light);
-            border: 1px solid var(--red-border);
-            border-radius: 10px;
-            padding: 14px 18px;
-            font-size: 14px;
-            color: var(--red);
-            line-height: 1.5;
-            font-weight: 500;
-        }
+      .btn-outline {
+        background: #fff;
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+      }
 
-        /* Footer */
-        .error-footer {
-            padding: 20px 32px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
+      .btn-outline:hover {
+        border-color: var(--green);
+        color: var(--green);
+      }
 
-        .btn {
-            padding: 10px 22px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
+      .btn-green {
+        background: var(--green);
+        color: #fff;
+      }
 
-        .btn-outline {
-            background: #fff;
-            border: 1.5px solid var(--border);
-            color: var(--muted);
-        }
+      .btn-green:hover {
+        background: #145539;
+      }
 
-        .btn-outline:hover { border-color: var(--green); color: var(--green); }
-
-        .btn-green {
-            background: var(--green);
-            color: #fff;
-        }
-
-        .btn-green:hover { background: #145539; }
-
-        /* No trace fallback */
-        .no-trace {
-            font-size: 13px;
-            color: var(--muted);
-            font-style: italic;
-        }
+      /* No trace fallback */
+      .no-trace {
+        font-size: 13px;
+        color: var(--muted);
+        font-style: italic;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="logo">Family Help UAE</div>
 
-<div class="logo">Family Help UAE</div>
-
-<div class="card">
-
-    <div class="error-header">
+    <div class="card">
+      <div class="error-header">
         <div class="icon">⚠</div>
         <div>
-            <h1>Something went wrong</h1>
-            <p>An error occurred while processing your request.</p>
+          <h1>Something went wrong</h1>
+          <p>An error occurred while processing your request.</p>
         </div>
-    </div>
+      </div>
 
-    <div class="error-body">
-
+      <div class="error-body">
         <!-- Status + Path -->
         <div class="info-grid">
-            <div class="info-item">
-                <div class="label">Status</div>
-                <div class="value">
-                    <span class="status-badge" th:text="${status}">500</span>
-                </div>
+          <div class="info-item">
+            <div class="label">Status</div>
+            <div class="value">
+              <span class="status-badge" th:text="${status}">500</span>
             </div>
-            <div class="info-item">
-                <div class="label">Error</div>
-                <div class="value" th:text="${error ?: 'Unknown Error'}">Internal Server Error</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Error</div>
+            <div class="value" th:text="${error ?: 'Unknown Error'}">
+              Internal Server Error
             </div>
-            <div class="info-item">
-                <div class="label">Path</div>
-                <div class="value" th:text="${path ?: 'N/A'}">/register</div>
-            </div>
-            <div class="info-item">
-                <div class="label">Timestamp</div>
-                <div class="value" th:text="${timestamp ?: 'N/A'}">–</div>
-            </div>
+          </div>
+          <div class="info-item">
+            <div class="label">Path</div>
+            <div class="value" th:text="${path ?: 'N/A'}">/register</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Timestamp</div>
+            <div class="value" th:text="${timestamp ?: 'N/A'}">–</div>
+          </div>
         </div>
 
         <!-- Message -->
         <div th:if="${message != null and message != 'No message available'}">
-            <div class="section-label">Message</div>
-            <div class="message-box" th:text="${message}">Error message here</div>
+          <div class="section-label">Message</div>
+          <div class="message-box" th:text="${message}">Error message here</div>
         </div>
 
         <!-- Exception -->
         <div th:if="${exception != null}">
-            <div class="section-label">Exception</div>
-            <div class="message-box" th:text="${exception}">Exception class here</div>
+          <div class="section-label">Exception</div>
+          <div class="message-box" th:text="${exception}">
+            Exception class here
+          </div>
         </div>
 
         <!-- Stack Trace -->
         <div th:if="${trace != null}">
-            <div class="section-label">Stack Trace</div>
-            <div class="trace-box">
-                <pre th:text="${trace}"></pre>
-            </div>
+          <div class="section-label">Stack Trace</div>
+          <div class="trace-box">
+            <pre th:text="${trace}"></pre>
+          </div>
         </div>
 
         <div th:if="${trace == null}">
-            <p class="no-trace">
-                Stack trace not available. Add <code>server.error.include-stacktrace=always</code>
-                to your <code>application.properties</code> to see it here.
-            </p>
+          <p class="no-trace">
+            Stack trace not available. Add
+            <code>server.error.include-stacktrace=always</code> to your
+            <code>application.properties</code> to see it here.
+          </p>
         </div>
+      </div>
 
-    </div>
-
-    <div class="error-footer">
-        <a href="javascript:history.back()" class="btn btn-outline">← Go Back</a>
+      <div class="error-footer">
+        <a href="javascript:history.back()" class="btn btn-outline"
+          >← Go Back</a
+        >
         <a th:href="@{/home}" class="btn btn-green">Go to Home</a>
+      </div>
     </div>
-
-</div>
-
-</body>
+  </body>
 </html>

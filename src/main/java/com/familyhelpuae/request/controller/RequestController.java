@@ -1,3 +1,12 @@
+/**
+ * Section: 104
+ * Group number: 4
+ * Student IDs and names: 
+ * Laisa Sanjida Isra: 1089635
+ * Fatima Syed Wasti: 1095190
+ * Aysha Hira: 1088000
+ */
+
 package com.familyhelpuae.request.controller;
 
 import java.util.List;
@@ -31,25 +40,26 @@ public class RequestController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> createRequest(@RequestBody Request request, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> createRequest(@RequestBody Request request,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         String currentUserId = userDetails.getUser().getUserID();
 
         // Validate that the requesting family actually belongs to the logged-in user
         if (request.getRequestingFamilyId() != null) {
             boolean belongsToUser = userFamilyService.isRelatedToFamily(
-                currentUserId, request.getRequestingFamilyId());
+                    currentUserId, request.getRequestingFamilyId());
             if (!belongsToUser) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You do not belong to this family");
+                        .body("You do not belong to this family");
             }
         }
 
         request.setRequestingUserId(currentUserId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(requestService.createRequest(request));
+                .body(requestService.createRequest(request));
     }
-    
+
     @GetMapping("/{requestId}")
     public ResponseEntity<Request> getRequestById(@PathVariable String requestId) {
         return ResponseEntity.ok(requestService.getRequestById(requestId));
@@ -62,7 +72,7 @@ public class RequestController {
 
     @PutMapping("/update/{requestId}")
     public ResponseEntity<Request> updateRequest(@PathVariable String requestId,
-                                                  @RequestBody Request request) {
+            @RequestBody Request request) {
         return ResponseEntity.ok(requestService.updateRequest(request, requestId));
     }
 
@@ -89,35 +99,35 @@ public class RequestController {
 
     @PutMapping("/{requestId}/status")
     public ResponseEntity<Request> updateStatus(@PathVariable String requestId,
-                                                 @RequestParam String status) {
+            @RequestParam String status) {
         return ResponseEntity.ok(requestService.updateStatus(requestId, status));
     }
-    
+
     @GetMapping("/title/{title}")
     public ResponseEntity<List<Request>> getByTitle(@PathVariable String title) {
         return ResponseEntity.ok(requestService.getRequestsByTitle(title));
     }
-    
+
     @PostMapping("/{requestId}/offers/{offerId}")
     public ResponseEntity<Request> linkOffer(@PathVariable String requestId,
-                                              @PathVariable String offerId) {
+            @PathVariable String offerId) {
         return ResponseEntity.ok(requestService.linkOffer(requestId, offerId));
     }
 
     @DeleteMapping("/{requestId}/offers/{offerId}")
     public ResponseEntity<Request> unlinkOffer(@PathVariable String requestId,
-                                                @PathVariable String offerId) {
+            @PathVariable String offerId) {
         return ResponseEntity.ok(requestService.unlinkOffer(requestId, offerId));
     }
-    
+
     @GetMapping("/feed")
     public ResponseEntity<List<RequestResponseDTO>> getFeed() {
         return ResponseEntity.ok(requestService.getOpenRequestsEnriched());
     }
-    
+
     @GetMapping("/enriched/{requestId}")
     public ResponseEntity<RequestResponseDTO> getEnrichedRequest(@PathVariable String requestId) {
         return ResponseEntity.ok(requestService.getRequestEnriched(requestId));
     }
-    
+
 }
