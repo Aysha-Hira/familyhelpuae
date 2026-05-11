@@ -11,6 +11,7 @@ import com.familyhelpuae.DTO.Register;
 import com.familyhelpuae.DTO.Relationship;
 import com.familyhelpuae.auth.service.AuthService;
 import com.familyhelpuae.exception.UserNotFoundException;
+import com.familyhelpuae.family.service.FamilyService;
 import com.familyhelpuae.user.model.User;
 import com.familyhelpuae.user.repository.UserRepository;
 import com.familyhelpuae.user.service.UserRelationshipService;
@@ -22,12 +23,14 @@ public class AuthServiceImpl implements AuthService {
     UserService UserService;
     UserRelationshipService UserRelationshipService;
     UserRepository UserRepository;
+    FamilyService familyService;
 
     public AuthServiceImpl(UserService UserService, UserRelationshipService UserRelationshipService,
-            UserRepository UserRepository) {
+            UserRepository UserRepository, FamilyService familyService) {
         this.UserService = UserService;
         this.UserRelationshipService = UserRelationshipService;
         this.UserRepository = UserRepository;
+        this.familyService = familyService;
     }
 
     @Override
@@ -93,8 +96,6 @@ public class AuthServiceImpl implements AuthService {
                         relationship.getRelatedEmail(),
                         relationship.getRelationshipType());
 
-            } else {
-                throw new IllegalArgumentException("Invalid relationship data");
             }
         }
 
@@ -106,21 +107,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // @Override
-    @Override
-    @Transactional
-    public User completeVerifiedRegistration(Register pending) {
-
-        User user = buildUserFromRegister(pending);
-        user.setVerified(true);
-
-        User savedUser = UserService.addUser(user);
-
-        if (hasRelationshipData(pending)) {
-            addRelationship(savedUser, pending);
-        }
-
-        return savedUser;
-    }
+    // field
+    // import from your family package
 
     @Override
     public User login(String email, String password) {
@@ -162,4 +150,42 @@ public class AuthServiceImpl implements AuthService {
         return pendingUser;
     }
 
+    @Override
+    @Transactional
+    public User completeVerifiedRegistration(Register pending) {
+
+        User user = buildUserFromRegister(pending);
+        user.setVerified(true);
+
+        User savedUser = UserService.addUser(user);
+
+        if (hasRelationshipData(pending)) {
+            addRelationship(savedUser, pending);
+        }
+
+        if (pending.isCreateFamily() && pending.getFamilies() != null) {
+            for (Family familyDTO : pending.getFamilies()) {
+                if (familyDTO.isCreateFamily()) {
+
+                    // 1. Build the Family model from the DTO
+                    com.familyhelpuae.family.model.Family newFamily = new com.familyhelpuae.family.model.Family();
+                    newFamily.setFamilyName(familyDTO.getFamilyName());
+
+                    // 2. Save it
+                    com.familyhelpuae.family.model.Family savedFamily = null;
+                    savedFamily = familyService.saveFamily(newFamily);
+
+                    // 3. Add the registering user as admin
+                    com.familyhelpuae.family.model.FamilyMember member = new com.familyhelpuae.family.model.FamilyMember();
+                    member.setFamilyMemberId(savedUser.getUserID());
+                    member.setIsAdmin(true);
+                    member.setIsUser(true);
+
+                    familyService.addMember(savedFamily.getFamilyId(), member);
+                }
+            }
+        }
+
+        return savedUser;
+    }
 }

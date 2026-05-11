@@ -92,20 +92,109 @@
       .editing .btn-del-conn {
         display: inline-flex;
       }
+
+      /* Sidebar */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: #fff;
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 28px 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+      }
+
+      .sidebar-logo {
+        font-family: 'DM Serif Display', serif;
+        font-size: 18px;
+        color: var(--green);
+        padding: 0 24px 28px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+      }
+
+      .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 0 12px;
+        flex: 1;
+        justify-content: flex-start;
+        align-items: stretch;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 16px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+        transition: all 0.15s;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: var(--green-light);
+        color: var(--green);
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        font-size: 16px;
+      }
+
+      .sidebar-footer {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+      }
+
+      .logout {
+        color: #c0392b !important;
+      }
+      .logout:hover {
+        background: #fdf0ef !important;
+        color: #c0392b !important;
+      }
     </style>
   </head>
 
   <body>
     <!-- top bar -->
-    <nav>
-      <a class="nav-logo" th:href="@{/home}">Family Help UAE</a>
-      <div class="nav-actions">
-        <a th:href="@{/home}">Home</a>
-        <form th:action="@{/logout}" method="post" style="display: inline">
-          <button type="submit" class="btn-logout">Sign out</button>
-        </form>
+    <aside class="sidebar">
+      <div class="sidebar-logo">Family Help UAE</div>
+      <nav class="sidebar-nav">
+        <a href="/home" class="nav-item active">
+          <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="/profile" class="nav-item">
+          <span class="nav-icon">👤</span> My Profile
+        </a>
+        <a href="/family" class="nav-item">
+          <span class="nav-icon">👨‍👩‍👧‍👦</span> My Family
+        </a>
+        <a href="/request/new" class="nav-item">
+          <span class="nav-icon">🙋</span> Post Request
+        </a>
+        <a href="/offer/my-offers" class="nav-item">
+          <span class="nav-icon">🤝</span> Post Offer
+        </a>
+        <a href="/interactions" class="nav-item">
+          <span class="nav-icon">📋</span> Interactions
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/logout" class="nav-item logout">
+          <span class="nav-icon">🚪</span> Sign Out
+        </a>
       </div>
-    </nav>
+    </aside>
 
     <div class="page">
       <div

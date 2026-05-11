@@ -2,7 +2,6 @@ package com.familyhelpuae.family.service;
 
 import java.util.List;
 
-import com.familyhelpuae.exception.DuplicateFamilyIDException;
 import com.familyhelpuae.family.model.Family;
 import com.familyhelpuae.family.model.FamilyFeedback;
 import com.familyhelpuae.family.model.FamilyMember;
@@ -12,7 +11,7 @@ public interface FamilyService {
 	List<Family> getAllFamilies();
 	
 	//CRUD
-	Family saveFamily(Family newFamily) throws DuplicateFamilyIDException;
+	Family saveFamily(Family newFamily);
 	Family getFamilyById(String familyId);
 	Family updateFamily(Family newFamily, String familyId);
 	void deleteFamily(String familyId);

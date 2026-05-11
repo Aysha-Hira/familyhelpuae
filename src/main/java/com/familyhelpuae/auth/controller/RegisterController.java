@@ -38,27 +38,21 @@ public class RegisterController {
         }
 
         session.setAttribute("pendingUser", dto);
-        // return "redirect:/register/family"; // add after family has been completed
         return "redirect:/register/family";
     }
 
     @PostMapping("/register/family")
-    public String submitFamily(
-            @ModelAttribute("register") Register dto,
-            HttpSession session) {
+    public String submitFamily(@ModelAttribute("register") Register dto, HttpSession session) {
 
         Register pending = (Register) session.getAttribute("pendingUser");
+        pending = authService.addFamilies(pending, dto); // call ONCE, outside the loop
+        session.setAttribute("pendingUser", pending);
 
-        for (Family family : dto.getFamilies()) {
-            pending = authService.addFamilies(pending, dto);
-            session.setAttribute("pendingUser", pending);
-            if (!pending.isCreateFamily()) // joining a new family
-                // Send them to a holding page — they need admin approval
-                return "redirect:/register/pending-approval";
-
+        // Check result
+        if (!pending.isCreateFamily() && !pending.getFamilies().isEmpty()) {
+            return "redirect:/register/pending-approval"; // joining an existing family
         }
 
-        // Either creating a family or skipping — continue to members step
         return "redirect:/register/members";
     }
 

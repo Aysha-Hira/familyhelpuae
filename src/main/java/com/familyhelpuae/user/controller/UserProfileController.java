@@ -18,13 +18,6 @@ import com.familyhelpuae.user.service.UserFamilyService;
 import com.familyhelpuae.user.service.UserRelationshipService;
 import com.familyhelpuae.user.service.UserService;
 
-/**
- * FIX 5: Handles the four profile endpoints that userprofile.html posts to:
- * POST /profile/update – form-based profile field update
- * POST /profile/connections/add – add a relationship (fetch/JSON)
- * POST /profile/connections/delete – remove a relationship (fetch/JSON)
- * POST /profile/families/leave – leave a family (form-based)
- */
 @Controller
 @RequestMapping("/profile")
 public class UserProfileController {
@@ -42,12 +35,6 @@ public class UserProfileController {
         this.userFamilyService = userFamilyService;
     }
 
-    /**
-     * Handles the profile edit form in userprofile.html.
-     * Fields sent: firstName, lastName, phone, languagesSpoken, nationality
-     * (email is disabled in the form so it is NOT submitted — we never overwrite it
-     * here)
-     */
     @PostMapping("/update")
     public String updateProfile(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -86,10 +73,6 @@ public class UserProfileController {
         return "redirect:/profile";
     }
 
-    /**
-     * Handles the fetch() call from addConnection() in userprofile.html.
-     * Body: { "userId": "<relatedUserId>", "relationshipType": "<type>" }
-     */
     @PostMapping("/connections/add")
     @ResponseBody
     public User addConnection(
@@ -103,10 +86,6 @@ public class UserProfileController {
         return userRelationshipService.addRelationship(currentUserId, relatedUserId, relationshipType);
     }
 
-    /**
-     * Handles the fetch() call from deleteConnection() in userprofile.html.
-     * Body: { "userId": "<relatedUserId>" }
-     */
     @PostMapping("/connections/delete")
     @ResponseBody
     public void deleteConnection(
