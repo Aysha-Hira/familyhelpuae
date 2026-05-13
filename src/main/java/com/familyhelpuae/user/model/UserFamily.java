@@ -10,8 +10,10 @@
 package com.familyhelpuae.user.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UserFamily {
     public UserFamily(String familyId, String role) {
         this.familyId = familyId;

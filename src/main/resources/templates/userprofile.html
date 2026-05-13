@@ -617,10 +617,14 @@ Isra: 1089635 * Fatima Syed Wasti: 1095190 * Aysha Hira: 1088000 */ -->
                 >sibling</span
               >
               <!-- Delete button, only visible when editor is open -->
-              <form th:action="@{/profile/connections/delete}" method="post">
-                <input type="hidden" name="userId" th:value="${rel.userId}" />
-                <button type="submit" class="btn-del-conn">✕</button>
-              </form>
+              <button
+                type="button"
+                class="btn-del-conn"
+                th:attr="data-rel-id=${rel.userId}"
+                onclick="deleteConnection(this)"
+              >
+                ✕
+              </button>
             </div>
           </div>
           <p class="empty-state" th:if="${#lists.isEmpty(user.relationships)}">
@@ -728,7 +732,7 @@ Isra: 1089635 * Fatima Syed Wasti: 1095190 * Aysha Hira: 1088000 */ -->
           alert('Please select both a member and a relationship type.');
           return;
         }
-        // POST to your backend
+       
         fetch('/profile/connections/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

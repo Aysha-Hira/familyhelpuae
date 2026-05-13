@@ -12,8 +12,10 @@ package com.familyhelpuae.family.model;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class FamilyMember {
 
 	String familyMemberId; // the id of the user who is a member of the family

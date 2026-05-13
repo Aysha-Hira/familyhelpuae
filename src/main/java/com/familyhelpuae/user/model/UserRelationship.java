@@ -10,8 +10,10 @@
 package com.familyhelpuae.user.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UserRelationship {
 
     // For Registered Users: This will store the userID of the related user and the
